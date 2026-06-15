@@ -1,20 +1,13 @@
 import { useEffect } from "react";
+import { cognitoConfig } from "../cognitoConfig";
 
 function Login() {
 
   useEffect(() => {
-
-    const clientId =
-      "41srruhjebtheft95e23emvnvv";
-
-    const redirectUri =
-      "http://localhost:5173/dashboard";
-
-    const cognitoDomain =
-      "https://ap-south-13jwxcnfde.auth.ap-south-1.amazoncognito.com";
+    const { clientId, domain, redirectUri } = cognitoConfig;
 
     window.location.href =
-      `${cognitoDomain}/login?client_id=${clientId}&response_type=code&scope=openid+email+profile&redirect_uri=${encodeURIComponent(redirectUri)}`;
+      `${domain}/login?client_id=${clientId}&response_type=code&scope=openid+email+profile&redirect_uri=${encodeURIComponent(redirectUri)}`;
 
   }, []);
 
