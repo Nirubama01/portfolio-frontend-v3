@@ -1,119 +1,112 @@
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cognitoConfig } from "../cognitoConfig";
 import { jwtDecode } from "jwt-decode";
 
 function Dashboard() {
-
   const navigate = useNavigate();
+
+  const [isAdmin, setIsAdmin] = useState(
+    localStorage.getItem("isAdmin") === "true"
+  );
+
   const logout = () => {
+    localStorage.removeItem("userId");
+    localStorage.removeItem("id_token");
+    localStorage.removeItem("cognito_code");
+    localStorage.removeItem("isAdmin");
 
-  localStorage.removeItem(
-    "userId"
-  );
+    navigate("/");
+  };
 
-  localStorage.removeItem(
-    "id_token"
-  );
-
-  localStorage.removeItem(
-    "cognito_code"
-  );
-
-  navigate("/");
-};
   useEffect(() => {
+    const params = new URLSearchParams(
+      window.location.search
+    );
 
-  const params =
-    new URLSearchParams(window.location.search);
+    const code = params.get("code");
 
-  const code =
-    params.get("code");
+    if (!code) {
+      return;
+    }
 
-  console.log("Authorization Code:", code);
+    fetch(
+      `${cognitoConfig.domain}/oauth2/token`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          grant_type: "authorization_code",
+          client_id: cognitoConfig.clientId,
+          code: code,
+          redirect_uri:
+            cognitoConfig.redirectUri,
+        }),
+      }
+    )
+      .then(async (response) => {
+        const data = await response.json();
+        console.log("TOKEN RESPONSE", data);
+        console.log("STATUS", response.status);
+        return data;
+      })
+      .then((data) => {
+        if (!data.id_token) {
+          console.error("No id_token returned", data);
+          return;
+        }
 
-if (code) {
-  localStorage.setItem(
-    "cognito_code",
-    code
-  );
+        const decodedToken = jwtDecode(data.id_token);
 
-fetch(
-  `${cognitoConfig.domain}/oauth2/token`,
-  {
-    method: "POST",
-    headers: {
-      "Content-Type":
-        "application/x-www-form-urlencoded",
-    },
-    body: new URLSearchParams({
-      grant_type: "authorization_code",
-      client_id:
-        cognitoConfig.clientId,
-      code: code,
-      redirect_uri:
-        cognitoConfig.redirectUri,
-    }),
-  }
-)
-  .then((response) =>
-    response.json()
-  )
-  .then((data) => {
+        localStorage.setItem("userId", decodedToken.sub);
+        localStorage.setItem("id_token", data.id_token);
 
-    const decodedToken =
-  jwtDecode(data.id_token);
+        const admin =
+          decodedToken["cognito:groups"]?.includes("Admin") || false;
 
-console.log(
-  "Decoded Token:",
-  decodedToken
-);
+        localStorage.setItem("isAdmin", String(admin));
+        setIsAdmin(admin);
 
-localStorage.setItem(
-  "userId",
-  decodedToken.sub
-);
-
-  console.log(
-    "Token Response:",
-    data
-  );
-
-  localStorage.setItem(
-    "id_token",
-    data.id_token
-  );
-
-});
-}
-
-}, []);
+        console.log("Admin:", admin);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   return (
     <div>
       <h1>Dashboard</h1>
-
       <h2>Welcome to Portfolio Management System</h2>
 
-      <button
-        onClick={() => navigate("/create-portfolio")}
-      >
+      <button onClick={() => navigate("/create-portfolio")}>
         Create Portfolio
       </button>
 
-      <br /><br />
+      <br />
+      <br />
 
-      <button
-  onClick={() => navigate("/my-portfolios")}
->
-  My Portfolios
-</button>
+      <button onClick={() => navigate("/my-portfolios")}>
+        My Portfolios
+      </button>
 
-<br /><br />
+      {isAdmin && (
+        <>
+          <br />
+          <br />
+          <button onClick={() => navigate("/admin")}>
+            Admin Dashboard
+          </button>
+        </>
+      )}
 
-<button onClick={logout}>
-  Logout
-</button>
+      <br />
+      <br />
+
+      <button onClick={logout}>Logout</button>
     </div>
   );
 }
