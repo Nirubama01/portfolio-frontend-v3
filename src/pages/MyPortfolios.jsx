@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ClassicTemplate from "../templates/ClassicTemplate";
 import DarkTemplate from "../templates/DarkTemplate";
+import ResumeTemplate from "../templates/ResumeTemplate";
 
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
@@ -54,13 +55,11 @@ function MyPortfolios() {
           style={{ marginBottom: "20px" }}
         >
           {portfolio.template === "dark" ? (
-  <DarkTemplate
-    portfolio={portfolio}
-  />
+  <DarkTemplate portfolio={portfolio} />
+) : portfolio.template === "resume" ? (
+  <ResumeTemplate portfolio={portfolio} />
 ) : (
-  <ClassicTemplate
-    portfolio={portfolio}
-  />
+  <ClassicTemplate portfolio={portfolio} />
 )}
 
           <button
