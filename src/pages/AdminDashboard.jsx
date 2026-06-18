@@ -41,6 +41,33 @@ function AdminDashboard() {
     );
 }, []);
 
+const deletePortfolio = async (
+  userId,
+  portfolioId
+) => {
+  try {
+    await fetch(
+      "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio",
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userId,
+          portfolioId
+        })
+      }
+    );
+
+    alert("Portfolio Deleted");
+
+    loadPortfolios();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   return (
     <div style={{ padding: "20px" }}>
       <h1>Admin Dashboard</h1>
@@ -76,19 +103,34 @@ function AdminDashboard() {
       <th>Description</th>
       <th>Language</th>
       <th>User Id</th>
+      <th>Action</th>
     </tr>
   </thead>
 
   <tbody>
-    {portfolios.map((portfolio) => (
-      <tr key={portfolio.portfolioId}>
-        <td>{portfolio.title}</td>
-        <td>{portfolio.description}</td>
-        <td>{portfolio.language}</td>
-        <td>{portfolio.userId}</td>
-      </tr>
-    ))}
-  </tbody>
+  {portfolios.map((portfolio) => (
+    <tr key={portfolio.portfolioId}>
+      <td>{portfolio.title}</td>
+      <td>{portfolio.description}</td>
+      <td>{portfolio.language}</td>
+      <td>{portfolio.userId}</td>
+
+      <td>
+        <button
+          onClick={() =>
+            deletePortfolio(
+              portfolio.userId,
+              portfolio.portfolioId
+            )
+          }
+        >
+          Delete
+        </button>
+      </td>
+
+    </tr>
+  ))}
+</tbody>
 </table>
     </div>
   );
