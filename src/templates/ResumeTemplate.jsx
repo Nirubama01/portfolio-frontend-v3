@@ -5,14 +5,16 @@ function ResumeTemplate({ portfolio }) {
         display: "flex",
         border: "1px solid #ccc",
         margin: "10px",
-        minHeight: "300px"
+        padding: "20px",
+        minHeight: "300px",
+        borderRadius: "10px"
       }}
     >
+      {/* Left Side - Image */}
       <div
         style={{
           width: "250px",
-          background: "#f4f4f4",
-          padding: "20px"
+          textAlign: "center"
         }}
       >
         {portfolio.images &&
@@ -20,28 +22,40 @@ function ResumeTemplate({ portfolio }) {
             <img
               src={portfolio.images[0]}
               alt="Portfolio"
-              width="180"
+              width="200"
+              style={{
+                borderRadius: "10px"
+              }}
             />
           )}
-
-        <h3>Skills</h3>
-
-        {portfolio.tools?.map((tool) => (
-          <p key={tool}>{tool}</p>
-        ))}
       </div>
 
+      {/* Right Side - Details */}
       <div
         style={{
           flex: 1,
-          padding: "20px"
+          paddingLeft: "30px"
         }}
       >
-        <h1>{portfolio.title}</h1>
+        <p>
+          <strong>Title:</strong>{" "}
+          {portfolio.title}
+        </p>
 
-        <h3>{portfolio.language}</h3>
+        <p>
+          <strong>Description:</strong>{" "}
+          {portfolio.description}
+        </p>
 
-        <p>{portfolio.description}</p>
+        <p>
+          <strong>Language:</strong>{" "}
+          {portfolio.language}
+        </p>
+
+        <p>
+          <strong>Tools:</strong>{" "}
+          {portfolio.tools?.join(", ")}
+        </p>
       </div>
     </div>
   );
