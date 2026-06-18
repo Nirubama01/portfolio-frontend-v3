@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 function AdminDashboard() {
   const [users, setUsers] = useState([]);
+  const [portfolios, setPortfolios] = useState([]);
 
   useEffect(() => {
     fetch(
@@ -16,6 +17,29 @@ function AdminDashboard() {
         console.error(err);
       });
   }, []);
+
+  useEffect(() => {
+  fetch(
+    "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio/all"
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      const portfolioData =
+        JSON.parse(data.body);
+
+      console.log(
+        "PORTFOLIOS:",
+        portfolioData
+      );
+
+      setPortfolios(
+        portfolioData
+      );
+    })
+    .catch((err) =>
+      console.error(err)
+    );
+}, []);
 
   return (
     <div style={{ padding: "20px" }}>
