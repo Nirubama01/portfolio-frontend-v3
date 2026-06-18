@@ -61,6 +61,7 @@ const deletePortfolio = async (
     );
 
     alert("Portfolio Deleted");
+loadPortfolios();
 
     loadPortfolios();
   } catch (error) {
@@ -70,6 +71,14 @@ const deletePortfolio = async (
 
   return (
     <div style={{ padding: "20px" }}>
+        <div style={{ textAlign: "center", marginBottom: "30px" }}>
+  <h2>Statistics</h2>
+
+  <div>
+    <h3>Total Users: {users.length}</h3>
+    <h3>Total Portfolios: {portfolios.length}</h3>
+  </div>
+</div>
       <h1>Admin Dashboard</h1>
 
       <h2>All Users</h2>
