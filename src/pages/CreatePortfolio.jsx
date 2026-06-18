@@ -13,6 +13,8 @@ function CreatePortfolio() {
 
   const [tools, setTools] =
     useState("");
+    const [template, setTemplate] =
+  useState("classic");
 
   const [image, setImage] =
   useState(null);
@@ -69,6 +71,7 @@ console.log(uploadData);
           title,
           description,
           language,
+          template,
 
           tools: [
             tools
@@ -149,7 +152,26 @@ console.log(uploadData);
       />
 
       <br /><br />
+<select
+  value={template}
+  onChange={(e) =>
+    setTemplate(e.target.value)
+  }
+>
+  <option value="classic">
+    Classic Template
+  </option>
 
+  <option value="dark">
+    Modern Dark Template
+  </option>
+
+  <option value="resume">
+    Resume Template
+  </option>
+</select>
+
+<br /><br />
 <button
   onClick={createPortfolio}
 >
