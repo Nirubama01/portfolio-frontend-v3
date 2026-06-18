@@ -16,7 +16,7 @@ function CreatePortfolio() {
 
   const [image, setImage] =
   useState(null);
-  console.log(image);
+  console.log("Selected Image:", image);
 
   const createPortfolio = async () => {
 
