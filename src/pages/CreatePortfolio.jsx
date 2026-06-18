@@ -1,4 +1,5 @@
 import { useState } from "react";
+import TemplateSelector from "../components/TemplateSelector";
 
 function CreatePortfolio() {
 
@@ -152,25 +153,11 @@ console.log(uploadData);
       />
 
       <br /><br />
-<select
-  value={template}
-  onChange={(e) =>
-    setTemplate(e.target.value)
-  }
->
-  <option value="classic">
-    Classic Template
-  </option>
 
-  <option value="dark">
-    Modern Dark Template
-  </option>
-
-  <option value="resume">
-    Resume Template
-  </option>
-</select>
-
+<TemplateSelector
+  template={template}
+  setTemplate={setTemplate}
+/>
 <br /><br />
 <button
   onClick={createPortfolio}
