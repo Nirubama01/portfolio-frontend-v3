@@ -6,6 +6,7 @@ import CreatePortfolio from "./pages/CreatePortfolio";
 import MyPortfolios from "./pages/MyPortfolios";
 import EditPortfolio from "./pages/EditPortfolio";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AdminDashboard from "./pages/AdminDashboard";
 
 
 function App() {
@@ -45,6 +46,16 @@ function App() {
     </ProtectedRoute>
   }
 />
+
+<Route
+  path="/admin"
+  element={
+    <ProtectedRoute>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+
 </Routes>
     </BrowserRouter>
   );
