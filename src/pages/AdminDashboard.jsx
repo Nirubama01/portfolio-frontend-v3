@@ -66,6 +66,30 @@ function AdminDashboard() {
           ))}
         </tbody>
       </table>
+
+      <h2>All Portfolios</h2>
+
+<table border="1" cellPadding="10">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Language</th>
+      <th>User Id</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {portfolios.map((portfolio) => (
+      <tr key={portfolio.portfolioId}>
+        <td>{portfolio.title}</td>
+        <td>{portfolio.description}</td>
+        <td>{portfolio.language}</td>
+        <td>{portfolio.userId}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
     </div>
   );
 }
