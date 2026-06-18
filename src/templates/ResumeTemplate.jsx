@@ -7,7 +7,7 @@ function ResumeTemplate({ portfolio }) {
         border: "1px solid #ccc",
         margin: "10px",
         padding: "20px",
-        minHeight: "300px",
+        minHeight: "150px",
         borderRadius: "10px"
       }}
     >
