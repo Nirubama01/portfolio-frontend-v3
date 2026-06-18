@@ -6,7 +6,7 @@ function DarkTemplate({ portfolio }) {
         color: "white",
         padding: "20px",
         margin: "10px",
-        borderRadius: "10px",
+        borderRadius: "10px"
       }}
     >
       {portfolio.images &&
@@ -16,32 +16,30 @@ function DarkTemplate({ portfolio }) {
             alt="Portfolio"
             width="250"
             style={{
-              borderRadius: "10px",
+              borderRadius: "10px"
             }}
           />
         )}
 
-      <h1>{portfolio.title}</h1>
+      <p>
+        <strong>Title:</strong>{" "}
+        {portfolio.title}
+      </p>
 
-      <h3>{portfolio.language}</h3>
+      <p>
+        <strong>Description:</strong>{" "}
+        {portfolio.description}
+      </p>
 
-      <p>{portfolio.description}</p>
+      <p>
+        <strong>Language:</strong>{" "}
+        {portfolio.language}
+      </p>
 
-      <div>
-        {portfolio.tools?.map((tool) => (
-          <span
-            key={tool}
-            style={{
-              padding: "5px 10px",
-              marginRight: "5px",
-              background: "#333",
-              borderRadius: "20px",
-            }}
-          >
-            {tool}
-          </span>
-        ))}
-      </div>
+      <p>
+        <strong>Tools:</strong>{" "}
+        {portfolio.tools?.join(", ")}
+      </p>
     </div>
   );
 }
