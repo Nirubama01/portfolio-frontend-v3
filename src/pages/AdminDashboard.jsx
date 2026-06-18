@@ -89,18 +89,25 @@ loadPortfolios();
             <th>Name</th>
             <th>Email</th>
             <th>User Id</th>
+            <th>Action</th>
           </tr>
         </thead>
 
         <tbody>
-          {users.map((user) => (
-            <tr key={user.userId}>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.userId}</td>
-            </tr>
-          ))}
-        </tbody>
+  {users.map((user) => (
+    <tr key={user.userId}>
+      <td>{user.name}</td>
+      <td>{user.email}</td>
+      <td>{user.userId}</td>
+
+      <td>
+        <button>
+          Delete
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
       </table>
 
       <h2>All Portfolios</h2>
