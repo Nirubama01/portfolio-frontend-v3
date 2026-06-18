@@ -69,6 +69,34 @@ loadPortfolios();
   }
 };
 
+const deleteUser = async (userId) => {
+  try {
+    const response = await fetch(
+      "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio/users",
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          userId
+        })
+      }
+    );
+
+    const data = await response.json();
+
+    console.log(data);
+
+    alert("User Deleted");
+
+    loadUsers();
+
+  } catch (error) {
+    console.error(error);
+  }
+};
+
   return (
     <div style={{ padding: "20px" }}>
         <div style={{ textAlign: "center", marginBottom: "30px" }}>
@@ -101,10 +129,14 @@ loadPortfolios();
       <td>{user.userId}</td>
 
       <td>
-        <button>
-          Delete
-        </button>
-      </td>
+  <button
+    onClick={() =>
+      deleteUser(user.userId)
+    }
+  >
+    Delete
+  </button>
+</td>
     </tr>
   ))}
 </tbody>
