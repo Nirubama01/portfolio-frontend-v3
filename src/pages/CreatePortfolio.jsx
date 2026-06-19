@@ -1,5 +1,7 @@
 import { useState } from "react";
 import TemplateSelector from "../components/TemplateSelector";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 function CreatePortfolio() {
   const [currentIndex, setCurrentIndex] =
@@ -128,13 +130,11 @@ console.log(uploadData);
 
       <br /><br />
 
-      <textarea
-        placeholder="Description"
-        value={description}
-        onChange={(e) =>
-          setDescription(e.target.value)
-        }
-      />
+      <ReactQuill
+  theme="snow"
+  value={description}
+  onChange={setDescription}
+/>
 
       <br /><br />
 
