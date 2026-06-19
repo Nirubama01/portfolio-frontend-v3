@@ -38,8 +38,6 @@ function DeveloperTemplate({ portfolio }) {
         {portfolio.language}
       </p>
 
-      <h3>Skills</h3>
-
       <div
         style={{
           display: "flex",
@@ -47,28 +45,19 @@ function DeveloperTemplate({ portfolio }) {
           gap: "10px",
           flexWrap: "wrap"
         }}
-      >
-        <h3>Tools</h3>
-        {portfolio.tools?.map((tool) => (
-          <span
-            key={tool}
-            style={{
-              background: "#21262d",
-              padding: "8px",
-              borderRadius: "5px"
-            }}
-          >
-            {tool}
-          </span>
-        ))}
+      ><p>
+        <strong>Tools</strong>{" "}
+        {portfolio.tools}
+      </p>
       </div>
 
        <h2
         style={{
-          marginTop: "30px"
+          marginTop: "30px",
+          color:"white"
         }}
       >
-        About Me
+        Description
       </h2>
 
       <p>{portfolio.description}</p>
