@@ -169,6 +169,65 @@ function TemplateSelector({
 
           <p>Description...</p>
         </div>
+        {/* Modern Preview */}
+
+<div
+  onClick={() => setTemplate("modern")}
+  style={{
+    width: "250px",
+    border:
+      template === "modern"
+        ? "3px solid blue"
+        : "1px solid gray",
+    padding: "10px",
+    cursor: "pointer",
+    background: "white",
+    boxShadow: "0 4px 10px rgba(0,0,0,0.15)"
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center"
+    }}
+  >
+    <div
+      style={{
+        width: "80px",
+        height: "80px",
+        borderRadius: "50%",
+        background: "#ddd"
+      }}
+    />
+  </div>
+
+  <h4
+    style={{
+      textAlign: "center"
+    }}
+  >
+    Modern Template
+  </h4>
+
+  <p
+    style={{
+      textAlign: "center"
+    }}
+  >
+    Java
+  </p>
+
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "center",
+      gap: "5px"
+    }}
+  >
+    <span>AWS</span>
+    <span>React</span>
+  </div>
+</div>
       </div>
     </div>
   );

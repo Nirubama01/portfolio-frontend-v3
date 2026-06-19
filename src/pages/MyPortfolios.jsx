@@ -4,6 +4,7 @@ import ClassicTemplate from "../templates/ClassicTemplate";
 import DarkTemplate from "../templates/DarkTemplate";
 import ResumeTemplate from "../templates/ResumeTemplate";
 import DeveloperTemplate from "../templates/DeveloperTemplate";
+import ModernTemplate from "../templates/ModernTemplate";
 
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
@@ -61,6 +62,8 @@ function MyPortfolios() {
   <ResumeTemplate portfolio={portfolio} />
 ) : portfolio.template === "developer" ? (
   <DeveloperTemplate portfolio={portfolio} />
+) : portfolio.template === "modern" ? (
+  <ModernTemplate portfolio={portfolio} />
 ) : (
   <ClassicTemplate portfolio={portfolio} />
 )}
