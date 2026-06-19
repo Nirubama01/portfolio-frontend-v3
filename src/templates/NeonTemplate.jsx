@@ -61,7 +61,7 @@ function NeonTemplate({ portfolio }) {
         ))}
       </div>
 
-      <h3>About Me</h3>
+      <h3>Description</h3>
 
       <p>{portfolio.description}</p>
     </div>

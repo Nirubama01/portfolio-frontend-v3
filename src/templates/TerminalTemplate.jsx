@@ -13,14 +13,14 @@ function TerminalTemplate({ portfolio }) {
     >
       <p>&gt; whoami</p>
 
-      <h2>{portfolio.title}</h2>
+      <h2 style={{color:"#00ff00"}}>{portfolio.title}</h2>
 
       {portfolio.images &&
         portfolio.images.length > 0 && (
           <img
             src={portfolio.images[0]}
             alt="Profile"
-            width="120"
+            width="150"
             height="120"
             style={{
               objectFit: "cover",
@@ -42,7 +42,7 @@ function TerminalTemplate({ portfolio }) {
         </p>
       ))}
 
-      <p>&gt; about</p>
+      <p>&gt; Description</p>
 
       <p>{portfolio.description}</p>
     </div>
