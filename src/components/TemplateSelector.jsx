@@ -83,9 +83,9 @@ function TemplateSelector({
 
         <div
           style={{
-            minWidth: "320px",
             display: "flex",
-            justifyContent: "center"
+            justifyContent: "center",
+            alignItems: "center"
           }}
         >
           {/* Classic */}
@@ -99,7 +99,7 @@ function TemplateSelector({
               <img
                 src="https://placehold.co/220x120"
                 alt="preview"
-                width="220"
+                width="280"
               />
 
               <h4>Portfolio Title</h4>
@@ -123,7 +123,7 @@ function TemplateSelector({
               <div
                 style={{
                   display: "flex",
-                  height: "120px"
+                  height: "150px"
                 }}
               >
                 <div
@@ -163,8 +163,8 @@ function TemplateSelector({
 
               <div
                 style={{
-                  width: "80px",
-                  height: "80px",
+                  width: "100px",
+                  height: "100px",
                   borderRadius: "50%",
                   background: "#ddd",
                   margin: "0 auto"
@@ -192,9 +192,10 @@ function TemplateSelector({
               onClick={() => setTemplate("showcase")}
               style={cardStyle("showcase")}
             >
+              <h4>Showcase Template</h4>
               <div
                 style={{
-                  height: "120px",
+                  height: "150px",
                   background: "#ddd"
                 }}
               />
@@ -204,7 +205,7 @@ function TemplateSelector({
                   padding: "10px"
                 }}
               >
-                <h4>Showcase Template</h4>
+                
 
                 <p>Banner Portfolio</p>
               </div>
@@ -256,8 +257,8 @@ function TemplateSelector({
 
               <div
                 style={{
-                  width: "80px",
-                  height: "80px",
+                  width: "100px",
+                  height: "100px",
                   borderRadius: "50%",
                   background: "#444",
                   margin: "0 auto"
@@ -287,8 +288,8 @@ function TemplateSelector({
 
               <div
                 style={{
-                  width: "70px",
-                  height: "70px",
+                  width: "100px",
+                  height: "100px",
                   borderRadius: "50%",
                   border: "2px solid #00ffff",
                   background: "#222",
@@ -321,8 +322,8 @@ function TemplateSelector({
 
               <div
                 style={{
-                  width: "70px",
-                  height: "70px",
+                  width: "100px",
+                  height: "100px",
                   border: "2px solid #00ff00",
                   background: "#111",
                   margin: "10px auto"
