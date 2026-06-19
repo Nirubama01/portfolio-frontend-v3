@@ -10,9 +10,15 @@ function DeveloperTemplate({ portfolio }) {
         textAlign: "center"
       }}
     >
-      <h1>
-        👨‍💻 Developer Profile
-      </h1>
+      <h1
+  style={{
+    color: "white",
+    marginBottom: "20px"
+    textAlign: "center"
+  }}
+>
+  {portfolio.title}
+</h1>
 
       {portfolio.images &&
         portfolio.images.length > 0 && (
@@ -26,8 +32,6 @@ function DeveloperTemplate({ portfolio }) {
               }}
             />
         )}
-
-      <h2>{portfolio.title}</h2>
 
       <p>
         <strong>Language:</strong>{" "}
@@ -44,6 +48,7 @@ function DeveloperTemplate({ portfolio }) {
           flexWrap: "wrap"
         }}
       >
+        <h3>Tools</h3>
         {portfolio.tools?.map((tool) => (
           <span
             key={tool}
