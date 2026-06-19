@@ -2,7 +2,8 @@ import { useState } from "react";
 import TemplateSelector from "../components/TemplateSelector";
 
 function CreatePortfolio() {
-
+  const [currentIndex, setCurrentIndex] =
+  useState(0);
   const [themeType, setThemeType] =
   useState("light");
 
@@ -187,6 +188,8 @@ console.log(uploadData);
   template={template}
   setTemplate={setTemplate}
   themeType={themeType}
+  currentIndex={currentIndex}
+  setCurrentIndex={setCurrentIndex}
 />
 <br /><br />
 <button

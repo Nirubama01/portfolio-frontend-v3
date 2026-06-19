@@ -1,7 +1,9 @@
 function TemplateSelector({
   template,
   setTemplate,
-   themeType
+  themeType,
+  currentIndex,
+  setCurrentIndex
 }) {
   const cardStyle = (value) => ({
     width: "250px",
@@ -16,6 +18,38 @@ function TemplateSelector({
   const isLight =
   themeType === "light";
 
+  const templates = isLight
+  ? [
+      "classic",
+      "resume",
+      "modern",
+      "showcase"
+    ]
+  : [
+      "dark",
+      "developer",
+      "neon",
+      "terminal"
+    ];
+
+    const nextTemplate = () => {
+  const next =
+    (currentIndex + 1) %
+    templates.length;
+
+  setCurrentIndex(next);
+  setTemplate(templates[next]);
+};
+
+const prevTemplate = () => {
+  const prev =
+    currentIndex === 0
+      ? templates.length - 1
+      : currentIndex - 1;
+
+  setCurrentIndex(prev);
+  setTemplate(templates[prev]);
+};
   return (
     <div>
       <h3
@@ -26,6 +60,27 @@ function TemplateSelector({
       >
         Choose Template
       </h3>
+      <div
+  style={{
+    textAlign: "center",
+    marginBottom: "20px"
+  }}
+>
+  <button
+    onClick={prevTemplate}
+  >
+    ◀
+  </button>
+
+  <button
+    onClick={nextTemplate}
+    style={{
+      marginLeft: "10px"
+    }}
+  >
+    ▶
+  </button>
+</div>
 
       <div
         style={{
