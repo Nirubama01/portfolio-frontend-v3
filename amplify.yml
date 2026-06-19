@@ -3,7 +3,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm install
+        - npm install --legacy-peer-deps
     build:
       commands:
         - npm run build
@@ -14,8 +14,3 @@ frontend:
   cache:
     paths:
       - node_modules/**/*
-  customHeaders:
-    - pattern: '**/*'
-      headers:
-        - key: Cache-Control
-          value: no-store
