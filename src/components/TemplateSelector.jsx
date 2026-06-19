@@ -83,6 +83,7 @@ function TemplateSelector({
 
         <div
           style={{
+            minWidth: "320px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center"
