@@ -46,15 +46,7 @@ function RichTextEditor({ value, onChange }) {
         </button>
       </div>
 
-      <div
-        style={{
-          border: "1px solid #ccc",
-          minHeight: "150px",
-          padding: "10px",
-          borderRadius: "8px",
-          background: "white"
-        }}
-      >
+      <div>
         <EditorContent editor={editor} />
       </div>
     </div>
