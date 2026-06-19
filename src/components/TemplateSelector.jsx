@@ -34,6 +34,7 @@ function TemplateSelector({
             cursor: "pointer"
           }}
         >
+          <h4>Classic Template</h4>
           <img
             src="https://placehold.co/220x120"
             alt="preview"
@@ -64,6 +65,7 @@ function TemplateSelector({
             cursor: "pointer"
           }}
         >
+          <h4>Dark Template</h4>
           <div
             style={{
               height: "120px",
@@ -93,6 +95,7 @@ function TemplateSelector({
             cursor: "pointer"
           }}
         >
+          <h4>Resume Template</h4>
           <div
             style={{
               display: "flex",
@@ -118,7 +121,7 @@ function TemplateSelector({
             </div>
           </div>
 
-          <h4>Resume Template</h4>
+          
         </div>
 
         {/* Developer Preview */}
@@ -146,7 +149,7 @@ function TemplateSelector({
               textAlign: "center"
             }}
           >
-            👨‍💻Project Title 
+            👨‍💻Portfolio Title 
           </h4>
             <div
               style={{
@@ -163,9 +166,7 @@ function TemplateSelector({
 
           <p>Language: Java</p>
 
-          <p>Skills</p>
-
-          <p>AWS • React • DynamoDB</p>
+          <p>Description...</p>
         </div>
       </div>
     </div>

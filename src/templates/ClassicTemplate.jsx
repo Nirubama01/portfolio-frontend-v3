@@ -8,6 +8,7 @@ function ClassicTemplate({ portfolio }) {
         margin: "10px",
       }}
     >
+      
       {portfolio.images &&
         portfolio.images.length > 0 && (
           <img
