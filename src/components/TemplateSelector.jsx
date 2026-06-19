@@ -1,6 +1,7 @@
 function TemplateSelector({
   template,
-  setTemplate
+  setTemplate,
+   themeType
 }) {
   const cardStyle = (value) => ({
     width: "250px",
@@ -12,6 +13,8 @@ function TemplateSelector({
         : "1px solid gray",
     borderRadius: "10px"
   });
+  const isLight =
+  themeType === "light";
 
   return (
     <div>
@@ -32,6 +35,8 @@ function TemplateSelector({
           flexWrap: "wrap"
         }}
       >
+        {isLight && (
+  <>
         {/* Classic */}
         <div
           onClick={() => setTemplate("classic")}
@@ -146,6 +151,10 @@ function TemplateSelector({
             <p>Banner Portfolio</p>
           </div>
         </div>
+        </>
+)}
+{!isLight && (
+  <>
 
         {/* Dark */}
         <div
@@ -237,7 +246,8 @@ function TemplateSelector({
 </div>
 
         {/* Terminal */}
-        <div
+    {/* Terminal */}
+<div
   onClick={() => setTemplate("terminal")}
   style={{
     ...cardStyle("terminal"),
@@ -266,9 +276,13 @@ function TemplateSelector({
 
   <p>AWS React</p>
 </div>
+
+  </>
+)}
       </div>
     </div>
   );
 }
+
 
 export default TemplateSelector;

@@ -3,6 +3,9 @@ import TemplateSelector from "../components/TemplateSelector";
 
 function CreatePortfolio() {
 
+  const [themeType, setThemeType] =
+  useState("light");
+
   const [title, setTitle] =
     useState("");
 
@@ -154,9 +157,36 @@ console.log(uploadData);
 
       <br /><br />
 
+<div
+  style={{
+    textAlign: "center",
+    marginBottom: "20px"
+  }}
+>
+  <button
+    onClick={() =>
+      setThemeType("light")
+    }
+  >
+    Light Templates
+  </button>
+
+  <button
+    onClick={() =>
+      setThemeType("dark")
+    }
+    style={{
+      marginLeft: "10px"
+    }}
+  >
+    Dark Templates
+  </button>
+</div>
+
 <TemplateSelector
   template={template}
   setTemplate={setTemplate}
+  themeType={themeType}
 />
 <br /><br />
 <button
