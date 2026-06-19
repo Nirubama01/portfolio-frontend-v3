@@ -37,35 +37,25 @@ function ShowcaseTemplate({ portfolio }) {
           {portfolio.language}
         </p>
 
-        <h3>Tools</h3>
-
         <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            flexWrap: "wrap"
-          }}
-        >
-          {portfolio.tools?.map((tool) => (
-            <span
-              key={tool}
-              style={{
-                background: "#f0f0f0",
-                padding: "6px 12px",
-                borderRadius: "15px"
-              }}
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+          flexWrap: "wrap"
+        }}
+      ><p>
+        <strong>Tools:</strong>{" "}
+        {portfolio.tools}
+      </p>
+      </div>
 
         <h3
           style={{
             marginTop: "20px"
           }}
         >
-          About Me
+          Description
         </h3>
 
         <p>{portfolio.description}</p>
