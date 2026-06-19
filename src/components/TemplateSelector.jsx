@@ -157,7 +157,7 @@ function TemplateSelector({
               textAlign: "center"
             }}
           >
-            👨‍💻 Developer
+            👨‍💻Project Title 
           </h4>
 
           <p>Language: Java</p>
