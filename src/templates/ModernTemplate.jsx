@@ -3,20 +3,31 @@ function ModernTemplate({ portfolio }) {
     <div
       style={{
         background: "#ffffff",
-        padding: "40px",
+        padding: "25px",
         borderRadius: "20px",
         boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-        margin: "10px",
-        textAlign: "center"
+        margin: "20px auto",
+        textAlign: "center",
+        maxWidth: "500px"
       }}
     >
+      {/* Title */}
+      <h2
+        style={{
+          marginBottom: "20px"
+        }}
+      >
+        {portfolio.title}
+      </h2>
+
+      {/* Profile Image */}
       {portfolio.images &&
         portfolio.images.length > 0 && (
           <img
             src={portfolio.images[0]}
             alt="Profile"
-            width="180"
-            height="180"
+            width="120"
+            height="120"
             style={{
               borderRadius: "50%",
               objectFit: "cover",
@@ -25,23 +36,22 @@ function ModernTemplate({ portfolio }) {
           />
         )}
 
-      <h1>{portfolio.title}</h1>
-
-      <h3
-        style={{
-          color: "#666"
-        }}
-      >
+      {/* Language */}
+      <p>
+        <strong>Language:</strong>{" "}
         {portfolio.language}
-      </h3>
+      </p>
+
+      {/* Tools */}
+      <h3>Tools</h3>
 
       <div
         style={{
           display: "flex",
           justifyContent: "center",
-          gap: "10px",
+          gap: "8px",
           flexWrap: "wrap",
-          margin: "20px 0"
+          marginBottom: "20px"
         }}
       >
         {portfolio.tools?.map((tool) => (
@@ -49,8 +59,9 @@ function ModernTemplate({ portfolio }) {
             key={tool}
             style={{
               background: "#f0f0f0",
-              padding: "10px 15px",
-              borderRadius: "20px"
+              padding: "6px 12px",
+              borderRadius: "20px",
+              fontSize: "14px"
             }}
           >
             {tool}
@@ -58,11 +69,14 @@ function ModernTemplate({ portfolio }) {
         ))}
       </div>
 
+      {/* About Me */}
+      <h3>About Me</h3>
+
       <p
         style={{
-          maxWidth: "600px",
+          maxWidth: "400px",
           margin: "0 auto",
-          lineHeight: "1.8"
+          lineHeight: "1.6"
         }}
       >
         {portfolio.description}

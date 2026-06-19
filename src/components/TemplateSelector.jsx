@@ -150,7 +150,7 @@ function TemplateSelector({
               textAlign: "center"
             }}
           >
-            👨‍💻Portfolio Title 
+            👨Portfolio Title 
           </h4>
             <div
               style={{
@@ -165,7 +165,7 @@ function TemplateSelector({
 
           
 
-          <strong>Language: Java</strong>
+          <p><strong>Language:</strong> Java</p>
 
           <p>Description...</p>
         </div>
@@ -191,6 +191,13 @@ function TemplateSelector({
       justifyContent: "center"
     }}
   >
+    <h4
+    style={{
+      textAlign: "center"
+    }}
+  >
+    Modern Template
+  </h4>
     <div
       style={{
         width: "80px",
@@ -202,12 +209,12 @@ function TemplateSelector({
   </div>
 
   <h4
-    style={{
-      textAlign: "center"
-    }}
-  >
-    Modern Template
-  </h4>
+            style={{
+              textAlign: "center"
+            }}
+          >
+            👨Portfolio Title 
+          </h4>
 
   <p
     style={{

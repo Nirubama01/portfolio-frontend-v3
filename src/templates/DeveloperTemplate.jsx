@@ -46,7 +46,7 @@ function DeveloperTemplate({ portfolio }) {
           flexWrap: "wrap"
         }}
       ><p>
-        <strong>Tools</strong>{" "}
+        <strong>Tools:</strong>{" "}
         {portfolio.tools}
       </p>
       </div>
