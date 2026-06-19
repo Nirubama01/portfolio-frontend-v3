@@ -139,6 +139,7 @@ function TemplateSelector({
             cursor: "pointer"
           }}
         >
+          <h4>Developer Template</h4>
           <div
             style={{
               textAlign: "center"
@@ -164,7 +165,7 @@ function TemplateSelector({
 
           
 
-          <p>Language: Java</p>
+          <strong>Language: Java</strong>
 
           <p>Description...</p>
         </div>
