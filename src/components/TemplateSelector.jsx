@@ -4,14 +4,23 @@ function TemplateSelector({
 }) {
   return (
     <div>
-      <h3>Choose Template</h3>
+      <h3
+  style={{
+    textAlign: "center",
+    marginBottom: "20px"
+  }}
+>
+  Choose Template
+</h3>
 
       <div
-        style={{
-          display: "flex",
-          gap: "20px"
-        }}
-      >
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    gap: "30px",
+    flexWrap: "wrap"
+  }}
+>
         {/* Classic Preview */}
 
         <div
