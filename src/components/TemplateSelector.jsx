@@ -31,6 +31,8 @@ function TemplateSelector({
       "neon",
       "terminal"
     ];
+    const currentTemplate =
+  templates[currentIndex];
 
     const nextTemplate = () => {
   const next =
@@ -66,20 +68,47 @@ const prevTemplate = () => {
     marginBottom: "20px"
   }}
 >
+  <div
+  style={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "20px",
+    marginBottom: "20px"
+  }}
+>
   <button
     onClick={prevTemplate}
+    style={{
+      width: "50px",
+      height: "50px",
+      borderRadius: "50%",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "20px"
+    }}
   >
     ◀
   </button>
 
+  <h3>
+    {currentTemplate.toUpperCase()}
+  </h3>
+
   <button
     onClick={nextTemplate}
     style={{
-      marginLeft: "10px"
+      width: "50px",
+      height: "50px",
+      borderRadius: "50%",
+      border: "none",
+      cursor: "pointer",
+      fontSize: "20px"
     }}
   >
     ▶
   </button>
+</div>
 </div>
 
       <div
