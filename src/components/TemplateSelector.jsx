@@ -6,15 +6,20 @@ function TemplateSelector({
   setCurrentIndex
 }) {
   const cardStyle = (value) => ({
-    width: "250px",
-    padding: "10px",
-    cursor: "pointer",
-    border:
-      template === value
-        ? "3px solid blue"
-        : "1px solid gray",
-    borderRadius: "10px"
-  });
+  width: "320px",
+  height: "350px",
+  padding: "15px",
+  cursor: "pointer",
+  border:
+    template === value
+      ? "3px solid blue"
+      : "1px solid gray",
+  borderRadius: "10px",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "flex-start",
+  overflow: "hidden"
+});
 
   const isLight = themeType === "light";
 
