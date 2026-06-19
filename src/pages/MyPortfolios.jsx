@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ClassicTemplate from "../templates/ClassicTemplate";
 import DarkTemplate from "../templates/DarkTemplate";
 import ResumeTemplate from "../templates/ResumeTemplate";
+import DeveloperTemplate from "../templates/DeveloperTemplate";
 
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
@@ -58,6 +59,8 @@ function MyPortfolios() {
   <DarkTemplate portfolio={portfolio} />
 ) : portfolio.template === "resume" ? (
   <ResumeTemplate portfolio={portfolio} />
+) : portfolio.template === "developer" ? (
+  <DeveloperTemplate portfolio={portfolio} />
 ) : (
   <ClassicTemplate portfolio={portfolio} />
 )}

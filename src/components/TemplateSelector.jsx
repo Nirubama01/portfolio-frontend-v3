@@ -5,28 +5,25 @@ function TemplateSelector({
   return (
     <div>
       <h3
-  style={{
-    textAlign: "center",
-    marginBottom: "20px"
-  }}
->
-  Choose Template
-</h3>
+        style={{
+          textAlign: "center",
+          marginBottom: "20px"
+        }}
+      >
+        Choose Template
+      </h3>
 
       <div
-  style={{
-    display: "flex",
-    justifyContent: "center",
-    gap: "30px",
-    flexWrap: "wrap"
-  }}
->
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "30px",
+          flexWrap: "wrap"
+        }}
+      >
         {/* Classic Preview */}
-
         <div
-          onClick={() =>
-            setTemplate("classic")
-          }
+          onClick={() => setTemplate("classic")}
           style={{
             width: "250px",
             border:
@@ -46,83 +43,129 @@ function TemplateSelector({
           <h4>Portfolio Title</h4>
 
           <p>
-            <strong>Language:</strong>
-            React
+            <strong>Language:</strong> React
           </p>
+
+          <p>Description...</p>
+        </div>
+
+        {/* Dark Preview */}
+        <div
+          onClick={() => setTemplate("dark")}
+          style={{
+            width: "250px",
+            backgroundColor: "#111",
+            color: "white",
+            border:
+              template === "dark"
+                ? "3px solid blue"
+                : "1px solid gray",
+            padding: "10px",
+            cursor: "pointer"
+          }}
+        >
+          <div
+            style={{
+              height: "120px",
+              background: "#333"
+            }}
+          />
+
+          <h4>Portfolio Title</h4>
 
           <p>
-            Description...
+            <strong>Language:</strong> React
           </p>
+
+          <p>Description...</p>
         </div>
+
+        {/* Resume Preview */}
         <div
-  onClick={() => setTemplate("dark")}
-  style={{
-    width: "250px",
-    backgroundColor: "#111",
-    color: "white",
-    border:
-      template === "dark"
-        ? "3px solid blue"
-        : "1px solid gray",
-    padding: "10px",
-    cursor: "pointer"
-  }}
->
-  <div
-    style={{
-      height: "120px",
-      background: "#333"
-    }}
-  />
+          onClick={() => setTemplate("resume")}
+          style={{
+            width: "250px",
+            border:
+              template === "resume"
+                ? "3px solid blue"
+                : "1px solid gray",
+            padding: "10px",
+            cursor: "pointer"
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              height: "120px"
+            }}
+          >
+            <div
+              style={{
+                width: "40%",
+                background: "#ddd"
+              }}
+            />
 
-  <h4>Portfolio Title</h4>
+            <div
+              style={{
+                flex: 1,
+                padding: "5px"
+              }}
+            >
+              <div>Title</div>
+              <div>Description</div>
+              <div>Language</div>
+            </div>
+          </div>
 
-  <p>
-    <strong>Language:</strong>
-    React
-  </p>
+          <h4>Resume Template</h4>
+        </div>
 
-  <p>Description...</p>
-</div>
-<div
-  onClick={() => setTemplate("resume")}
-  style={{
-    width: "250px",
-    border:
-      template === "resume"
-        ? "3px solid blue"
-        : "1px solid gray",
-    padding: "10px",
-    cursor: "pointer"
-  }}
->
-  <div
-    style={{
-      display: "flex",
-      height: "120px"
-    }}
-  >
-    <div
-      style={{
-        width: "40%",
-        background: "#ddd"
-      }}
-    />
+        {/* Developer Preview */}
+        <div
+          onClick={() => setTemplate("developer")}
+          style={{
+            width: "250px",
+            backgroundColor: "#0d1117",
+            color: "white",
+            border:
+              template === "developer"
+                ? "3px solid blue"
+                : "1px solid gray",
+            padding: "10px",
+            cursor: "pointer"
+          }}
+        >
+          <div
+            style={{
+              textAlign: "center"
+            }}
+          >
+            <div
+              style={{
+                width: "80px",
+                height: "80px",
+                borderRadius: "50%",
+                background: "#444",
+                margin: "0 auto"
+              }}
+            />
+          </div>
 
-    <div
-      style={{
-        flex: 1,
-        padding: "5px"
-      }}
-    >
-      <div>Title</div>
-      <div>Description</div>
-      <div>Language</div>
-    </div>
-  </div>
+          <h4
+            style={{
+              textAlign: "center"
+            }}
+          >
+            👨‍💻 Developer
+          </h4>
 
-  <h4>Resume Template</h4>
-</div>
+          <p>Language: Java</p>
+
+          <p>Skills</p>
+
+          <p>AWS • React • DynamoDB</p>
+        </div>
       </div>
     </div>
   );
