@@ -141,6 +141,13 @@ function TemplateSelector({
               textAlign: "center"
             }}
           >
+            <h4
+            style={{
+              textAlign: "center"
+            }}
+          >
+            👨‍💻Project Title 
+          </h4>
             <div
               style={{
                 width: "80px",
@@ -152,13 +159,7 @@ function TemplateSelector({
             />
           </div>
 
-          <h4
-            style={{
-              textAlign: "center"
-            }}
-          >
-            👨‍💻Project Title 
-          </h4>
+          
 
           <p>Language: Java</p>
 
