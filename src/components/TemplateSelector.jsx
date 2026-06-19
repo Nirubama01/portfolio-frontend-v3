@@ -206,40 +206,66 @@ function TemplateSelector({
 
         {/* Neon */}
         <div
-          onClick={() => setTemplate("neon")}
-          style={{
-            ...cardStyle("neon"),
-            background: "#0a0a0a",
-            color: "#00ffff",
-            boxShadow:
-              "0 0 10px #00ffff"
-          }}
-        >
-          <h4>Neon Template</h4>
+  onClick={() => setTemplate("neon")}
+  style={{
+    ...cardStyle("neon"),
+    background: "#0a0a0a",
+    color: "#00ffff",
+    boxShadow: "0 0 10px #00ffff"
+  }}
+>
+  <h4>Neon Template</h4>
 
-          <p>AWS Engineer</p>
+  <div
+    style={{
+      width: "70px",
+      height: "70px",
+      borderRadius: "50%",
+      border: "2px solid #00ffff",
+      background: "#222",
+      margin: "10px auto"
+    }}
+  />
 
-          <p>[AWS] [React]</p>
-        </div>
+  <h4>Portfolio Title</h4>
+
+  <p>
+    <strong>Language:</strong> Java
+  </p>
+
+  <p>[AWS] [React]</p>
+</div>
 
         {/* Terminal */}
         <div
-          onClick={() => setTemplate("terminal")}
-          style={{
-            ...cardStyle("terminal"),
-            background: "#000",
-            color: "#00ff00",
-            fontFamily: "monospace"
-          }}
-        >
-          <p>&gt; whoami</p>
+  onClick={() => setTemplate("terminal")}
+  style={{
+    ...cardStyle("terminal"),
+    background: "#000",
+    color: "#00ff00",
+    fontFamily: "monospace"
+  }}
+>
+  <h4>Terminal Template</h4>
 
-          <p>AWS Engineer</p>
+  <div
+    style={{
+      width: "70px",
+      height: "70px",
+      border: "2px solid #00ff00",
+      background: "#111",
+      margin: "10px auto"
+    }}
+  />
 
-          <p>&gt; skills</p>
+  <p>&gt; whoami</p>
 
-          <p>AWS React</p>
-        </div>
+  <p>Portfolio Title</p>
+
+  <p>&gt; skills</p>
+
+  <p>AWS React</p>
+</div>
       </div>
     </div>
   );
