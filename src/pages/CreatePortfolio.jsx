@@ -1,6 +1,5 @@
 import { useState } from "react";
 import TemplateSelector from "../components/TemplateSelector";
-import RichTextEditor from "../components/RichTextEditor";
 
 function CreatePortfolio() {
   const [currentIndex, setCurrentIndex] =
@@ -129,9 +128,21 @@ console.log(uploadData);
 
       <br /><br />
 
-      <RichTextEditor
+      <textarea
+  placeholder="Description"
   value={description}
-  onChange={setDescription}
+  onChange={(e) =>
+    setDescription(e.target.value)
+  }
+  rows="6"
+  style={{
+    width: "100%",
+    maxWidth: "1200px",
+    padding: "10px",
+    borderRadius: "8px",
+    border: "1px solid #ccc",
+    resize: "vertical"
+  }}
 />
 
       <br /><br />
