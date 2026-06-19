@@ -13,7 +13,7 @@ function DeveloperTemplate({ portfolio }) {
       <h1
   style={{
     color: "white",
-    marginBottom: "20px"
+    marginBottom: "20px",
     textAlign: "center"
   }}
 >
