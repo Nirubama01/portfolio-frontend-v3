@@ -4,104 +4,63 @@ function DeveloperTemplate({ portfolio }) {
       style={{
         backgroundColor: "#0d1117",
         color: "white",
-        padding: "40px",
-        borderRadius: "15px",
+        padding: "25px",
+        borderRadius: "10px",
         margin: "10px",
-        textAlign: "center",
-        minHeight: "500px"
+        textAlign: "center"
       }}
     >
-      {/* Profile Image */}
+      <h1
+  style={{
+    color: "white",
+    marginBottom: "20px",
+    textAlign: "center"
+  }}
+>
+  {portfolio.title}
+</h1>
+
       {portfolio.images &&
         portfolio.images.length > 0 && (
-          <img
-            src={portfolio.images[0]}
-            alt="Profile"
-            width="180"
-            height="180"
-            style={{
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "4px solid #30363d",
-              marginBottom: "20px"
-            }}
-          />
+        <img
+              src={portfolio.images[0]}
+              alt="Profile"
+              width="200"
+              style={{
+                borderRadius: "50%",
+                marginTop: "20px"
+              }}
+            />
         )}
 
-      {/* Portfolio Title */}
-      <h1
-        style={{
-          color: "white",
-          marginBottom: "25px"
-        }}
-      >
-        {portfolio.title}
-      </h1>
+      <p>
+        <strong>Language:</strong>{" "}
+        {portfolio.language}
+      </p>
 
-      {/* Language */}
       <div
         style={{
-          marginBottom: "25px"
+          display: "flex",
+          justifyContent: "center",
+          gap: "10px",
+          flexWrap: "wrap"
         }}
-      >
-        <h2>Language</h2>
-
-        <p
-          style={{
-            fontSize: "20px"
-          }}
-        >
-          {portfolio.language}
-        </p>
+      ><p>
+        <strong>Tools</strong>{" "}
+        {portfolio.tools}
+      </p>
       </div>
 
-      {/* Tools */}
-      <div
+       <h2
         style={{
-          marginBottom: "30px"
+          marginTop: "30px",
+          color:"white"
         }}
       >
-        <h2>Skills</h2>
+        Description
+      </h2>
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "10px",
-            flexWrap: "wrap"
-          }}
-        >
-          {portfolio.tools?.map((tool) => (
-            <span
-              key={tool}
-              style={{
-                backgroundColor: "#21262d",
-                padding: "10px 18px",
-                borderRadius: "20px",
-                fontSize: "14px"
-              }}
-            >
-              {tool}
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {/* About Me */}
-      <div>
-        <h2>About Me</h2>
-
-        <p
-          style={{
-            maxWidth: "700px",
-            margin: "0 auto",
-            lineHeight: "1.8",
-            fontSize: "16px"
-          }}
-        >
-          {portfolio.description}
-        </p>
-      </div>
+      <p>{portfolio.description}</p>
     </div>
   );
 }
