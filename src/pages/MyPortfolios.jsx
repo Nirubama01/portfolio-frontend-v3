@@ -5,6 +5,9 @@ import DarkTemplate from "../templates/DarkTemplate";
 import ResumeTemplate from "../templates/ResumeTemplate";
 import DeveloperTemplate from "../templates/DeveloperTemplate";
 import ModernTemplate from "../templates/ModernTemplate";
+import ShowcaseTemplate from "../templates/ShowcaseTemplate";
+import NeonTemplate from "../templates/NeonTemplate";
+import TerminalTemplate from "../templates/TerminalTemplate";
 
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
@@ -64,6 +67,12 @@ function MyPortfolios() {
   <DeveloperTemplate portfolio={portfolio} />
 ) : portfolio.template === "modern" ? (
   <ModernTemplate portfolio={portfolio} />
+) : portfolio.template === "showcase" ? (
+  <ShowcaseTemplate portfolio={portfolio} />
+) : portfolio.template === "neon" ? (
+  <NeonTemplate portfolio={portfolio} />
+) : portfolio.template === "terminal" ? (
+  <TerminalTemplate portfolio={portfolio} />
 ) : (
   <ClassicTemplate portfolio={portfolio} />
 )}

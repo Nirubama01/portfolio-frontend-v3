@@ -2,6 +2,17 @@ function TemplateSelector({
   template,
   setTemplate
 }) {
+  const cardStyle = (value) => ({
+    width: "250px",
+    padding: "10px",
+    cursor: "pointer",
+    border:
+      template === value
+        ? "3px solid blue"
+        : "1px solid gray",
+    borderRadius: "10px"
+  });
+
   return (
     <div>
       <h3
@@ -21,20 +32,13 @@ function TemplateSelector({
           flexWrap: "wrap"
         }}
       >
-        {/* Classic Preview */}
+        {/* Classic */}
         <div
           onClick={() => setTemplate("classic")}
-          style={{
-            width: "250px",
-            border:
-              template === "classic"
-                ? "3px solid blue"
-                : "1px solid gray",
-            padding: "10px",
-            cursor: "pointer"
-          }}
+          style={cardStyle("classic")}
         >
           <h4>Classic Template</h4>
+
           <img
             src="https://placehold.co/220x120"
             alt="preview"
@@ -50,52 +54,13 @@ function TemplateSelector({
           <p>Description...</p>
         </div>
 
-        {/* Dark Preview */}
-        <div
-          onClick={() => setTemplate("dark")}
-          style={{
-            width: "250px",
-            backgroundColor: "#111",
-            color: "white",
-            border:
-              template === "dark"
-                ? "3px solid blue"
-                : "1px solid gray",
-            padding: "10px",
-            cursor: "pointer"
-          }}
-        >
-          <h4>Dark Template</h4>
-          <div
-            style={{
-              height: "120px",
-              background: "#333"
-            }}
-          />
-
-          <h4>Portfolio Title</h4>
-
-          <p>
-            <strong>Language:</strong> React
-          </p>
-
-          <p>Description...</p>
-        </div>
-
-        {/* Resume Preview */}
+        {/* Resume */}
         <div
           onClick={() => setTemplate("resume")}
-          style={{
-            width: "250px",
-            border:
-              template === "resume"
-                ? "3px solid blue"
-                : "1px solid gray",
-            padding: "10px",
-            cursor: "pointer"
-          }}
+          style={cardStyle("resume")}
         >
           <h4>Resume Template</h4>
+
           <div
             style={{
               display: "flex",
@@ -120,121 +85,161 @@ function TemplateSelector({
               <div>Language</div>
             </div>
           </div>
-
-          
         </div>
 
-        {/* Developer Preview */}
+        {/* Modern */}
         <div
-          onClick={() => setTemplate("developer")}
+          onClick={() => setTemplate("modern")}
           style={{
-            width: "250px",
-            backgroundColor: "#0d1117",
-            color: "white",
-            border:
-              template === "developer"
-                ? "3px solid blue"
-                : "1px solid gray",
-            padding: "10px",
-            cursor: "pointer"
+            ...cardStyle("modern"),
+            boxShadow:
+              "0 4px 10px rgba(0,0,0,0.15)"
           }}
         >
-          <h4>Developer Template</h4>
+          <h4>Modern Template</h4>
+
+          <h4>Portfolio Title</h4>
+
           <div
             style={{
-              textAlign: "center"
+              width: "80px",
+              height: "80px",
+              borderRadius: "50%",
+              background: "#ddd",
+              margin: "0 auto"
             }}
-          >
-            <h4
+          />
+
+          <p>Java</p>
+
+          <div
             style={{
-              textAlign: "center"
+              display: "flex",
+              justifyContent: "center",
+              gap: "5px"
             }}
           >
-            👨Portfolio Title 
-          </h4>
-            <div
-              style={{
-                width: "80px",
-                height: "80px",
-                borderRadius: "50%",
-                background: "#444",
-                margin: "0 auto"
-              }}
-            />
+            <span>AWS</span>
+            <span>React</span>
           </div>
+        </div>
 
-          
+        {/* Showcase */}
+        <div
+          onClick={() => setTemplate("showcase")}
+          style={cardStyle("showcase")}
+        >
+          <div
+            style={{
+              height: "120px",
+              background: "#ddd"
+            }}
+          />
 
-          <p><strong>Language:</strong> Java</p>
+          <div
+            style={{
+              padding: "10px"
+            }}
+          >
+            <h4>Showcase Template</h4>
+
+            <p>Banner Portfolio</p>
+          </div>
+        </div>
+
+        {/* Dark */}
+        <div
+          onClick={() => setTemplate("dark")}
+          style={{
+            ...cardStyle("dark"),
+            background: "#111",
+            color: "white"
+          }}
+        >
+          <h4>Dark Template</h4>
+
+          <div
+            style={{
+              height: "120px",
+              background: "#333"
+            }}
+          />
+
+          <h4>Portfolio Title</h4>
+
+          <p>
+            <strong>Language:</strong> React
+          </p>
 
           <p>Description...</p>
         </div>
-        {/* Modern Preview */}
 
-<div
-  onClick={() => setTemplate("modern")}
-  style={{
-    width: "250px",
-    border:
-      template === "modern"
-        ? "3px solid blue"
-        : "1px solid gray",
-    padding: "10px",
-    cursor: "pointer",
-    background: "white",
-    boxShadow: "0 4px 10px rgba(0,0,0,0.15)"
-  }}
->
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center"
-    }}
-  >
-    <h4
-    style={{
-      textAlign: "center"
-    }}
-  >
-    Modern Template
-  </h4>
-    <div
-      style={{
-        width: "80px",
-        height: "80px",
-        borderRadius: "50%",
-        background: "#ddd"
-      }}
-    />
-  </div>
+        {/* Developer */}
+        <div
+          onClick={() => setTemplate("developer")}
+          style={{
+            ...cardStyle("developer"),
+            background: "#0d1117",
+            color: "white"
+          }}
+        >
+          <h4>Developer Template</h4>
 
-  <h4
+          <h4>Portfolio Title</h4>
+
+          <div
             style={{
-              textAlign: "center"
+              width: "80px",
+              height: "80px",
+              borderRadius: "50%",
+              background: "#444",
+              margin: "0 auto"
             }}
-          >
-            👨Portfolio Title 
-          </h4>
+          />
 
-  <p
-    style={{
-      textAlign: "center"
-    }}
-  >
-    Java
-  </p>
+          <p>
+            <strong>Language:</strong> Java
+          </p>
 
-  <div
-    style={{
-      display: "flex",
-      justifyContent: "center",
-      gap: "5px"
-    }}
-  >
-    <span>AWS</span>
-    <span>React</span>
-  </div>
-</div>
+          <p>Description...</p>
+        </div>
+
+        {/* Neon */}
+        <div
+          onClick={() => setTemplate("neon")}
+          style={{
+            ...cardStyle("neon"),
+            background: "#0a0a0a",
+            color: "#00ffff",
+            boxShadow:
+              "0 0 10px #00ffff"
+          }}
+        >
+          <h4>Neon Template</h4>
+
+          <p>AWS Engineer</p>
+
+          <p>[AWS] [React]</p>
+        </div>
+
+        {/* Terminal */}
+        <div
+          onClick={() => setTemplate("terminal")}
+          style={{
+            ...cardStyle("terminal"),
+            background: "#000",
+            color: "#00ff00",
+            fontFamily: "monospace"
+          }}
+        >
+          <p>&gt; whoami</p>
+
+          <p>AWS Engineer</p>
+
+          <p>&gt; skills</p>
+
+          <p>AWS React</p>
+        </div>
       </div>
     </div>
   );
