@@ -6,33 +6,25 @@ function DeveloperTemplate({ portfolio }) {
         color: "white",
         padding: "25px",
         borderRadius: "10px",
-        margin: "10px"
+        margin: "10px",
+        textAlign: "center"
       }}
     >
-      <h2
-        style={{
-          textAlign: "center"
-        }}
-      >
+      <h1>
         👨‍💻 Developer Profile
-      </h2>
+      </h1>
 
       {portfolio.images &&
         portfolio.images.length > 0 && (
-          <div
-            style={{
-              textAlign: "center"
-            }}
-          >
-            <img
+        <img
               src={portfolio.images[0]}
               alt="Profile"
               width="200"
               style={{
-                borderRadius: "50%"
+                borderRadius: "50%",
+                marginTop: "20px"
               }}
             />
-          </div>
         )}
 
       <h2>{portfolio.title}</h2>
@@ -47,6 +39,7 @@ function DeveloperTemplate({ portfolio }) {
       <div
         style={{
           display: "flex",
+          justifyContent: "center",
           gap: "10px",
           flexWrap: "wrap"
         }}
@@ -65,7 +58,13 @@ function DeveloperTemplate({ portfolio }) {
         ))}
       </div>
 
-      <h3>About Me</h3>
+       <h2
+        style={{
+          marginTop: "30px"
+        }}
+      >
+        About Me
+      </h2>
 
       <p>{portfolio.description}</p>
     </div>
