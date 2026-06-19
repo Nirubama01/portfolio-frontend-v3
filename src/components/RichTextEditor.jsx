@@ -14,7 +14,15 @@ function RichTextEditor({
   });
 
   return (
-    <div>
+    <div
+      style={{
+        border: "1px solid #ccc",
+        minHeight: "150px",
+        padding: "10px",
+        borderRadius: "8px",
+        background: "white"
+      }}
+    >
       <EditorContent editor={editor} />
     </div>
   );
