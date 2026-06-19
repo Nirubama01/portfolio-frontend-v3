@@ -54,6 +54,75 @@ function TemplateSelector({
             Description...
           </p>
         </div>
+        <div
+  onClick={() => setTemplate("dark")}
+  style={{
+    width: "250px",
+    backgroundColor: "#111",
+    color: "white",
+    border:
+      template === "dark"
+        ? "3px solid blue"
+        : "1px solid gray",
+    padding: "10px",
+    cursor: "pointer"
+  }}
+>
+  <div
+    style={{
+      height: "120px",
+      background: "#333"
+    }}
+  />
+
+  <h4>Portfolio Title</h4>
+
+  <p>
+    <strong>Language:</strong>
+    React
+  </p>
+
+  <p>Description...</p>
+</div>
+<div
+  onClick={() => setTemplate("resume")}
+  style={{
+    width: "250px",
+    border:
+      template === "resume"
+        ? "3px solid blue"
+        : "1px solid gray",
+    padding: "10px",
+    cursor: "pointer"
+  }}
+>
+  <div
+    style={{
+      display: "flex",
+      height: "120px"
+    }}
+  >
+    <div
+      style={{
+        width: "40%",
+        background: "#ddd"
+      }}
+    />
+
+    <div
+      style={{
+        flex: 1,
+        padding: "5px"
+      }}
+    >
+      <div>Title</div>
+      <div>Description</div>
+      <div>Language</div>
+    </div>
+  </div>
+
+  <h4>Resume Template</h4>
+</div>
       </div>
     </div>
   );
