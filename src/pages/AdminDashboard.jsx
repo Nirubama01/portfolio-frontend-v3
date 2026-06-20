@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import BackButton from "../components/BackButton";
 
 const API_URL =
   "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio";
@@ -140,6 +141,7 @@ function AdminDashboard() {
 
   return (
     <main className="admin-page">
+      <BackButton />
       <section className="admin-header">
         <div>
           <p className="admin-eyebrow">ADMINISTRATION</p>

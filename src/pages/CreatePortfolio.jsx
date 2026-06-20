@@ -1,5 +1,6 @@
 import { useState } from "react";
 import TemplateSelector from "../components/TemplateSelector";
+import BackButton from "../components/BackButton";
 
 function CreatePortfolio() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -73,6 +74,7 @@ function CreatePortfolio() {
 
   return (
     <main className="create-page">
+      <BackButton />
       <section className="create-header">
         <p className="create-eyebrow">NEW PROJECT</p>
         <h1>Create Portfolio</h1>

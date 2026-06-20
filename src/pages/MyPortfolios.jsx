@@ -8,6 +8,7 @@ import ModernTemplate from "../templates/ModernTemplate";
 import ShowcaseTemplate from "../templates/ShowcaseTemplate";
 import NeonTemplate from "../templates/NeonTemplate";
 import TerminalTemplate from "../templates/TerminalTemplate";
+import BackButton from "../components/BackButton";
 
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
@@ -96,7 +97,9 @@ function MyPortfolios() {
   };
 
   return (
+    
     <main className="portfolios-page">
+      <BackButton />
       <section className="portfolios-header">
         <div>
           <p className="portfolios-eyebrow">YOUR WORK</p>

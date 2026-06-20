@@ -868,3 +868,175 @@ code {
     flex-direction: column;
   }
 }
+
+/* Reusable back button */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text-h);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.back-button:hover {
+  transform: translateX(-3px);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* =========================
+   EDIT PORTFOLIO PAGE
+========================= */
+
+.edit-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 48px;
+  text-align: left;
+  background:
+    radial-gradient(circle at top right, var(--accent-bg), transparent 32%),
+    var(--bg);
+}
+
+.edit-header {
+  margin-bottom: 28px;
+}
+
+.edit-eyebrow {
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  margin-bottom: 10px;
+}
+
+.edit-header h1 {
+  margin: 0 0 10px;
+  font-size: clamp(34px, 5vw, 52px);
+}
+
+.edit-header > p:last-child {
+  max-width: 620px;
+  line-height: 1.6;
+}
+
+.edit-form-card {
+  width: min(100%, 760px);
+  padding: 30px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg);
+  box-shadow: var(--shadow);
+}
+
+.edit-form-heading {
+  margin-bottom: 24px;
+}
+
+.edit-form-heading h2 {
+  margin: 0 0 7px;
+}
+
+.edit-form-heading p {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.edit-form-field {
+  display: block;
+  margin-bottom: 22px;
+}
+
+.edit-form-field > span {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text-h);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.edit-form-field input,
+.edit-form-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  outline: none;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+}
+
+.edit-form-field textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+
+.edit-form-field input:focus,
+.edit-form-field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-bg);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.edit-cancel-button,
+.edit-save-button {
+  padding: 11px 17px;
+  border-radius: 10px;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 700;
+}
+
+.edit-cancel-button {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-h);
+}
+
+.edit-save-button {
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: white;
+}
+
+.edit-save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+@media (max-width: 800px) {
+  .edit-page {
+    padding: 24px 16px;
+  }
+
+  .edit-form-card {
+    padding: 20px;
+  }
+
+  .edit-actions {
+    flex-direction: column-reverse;
+  }
+
+  .edit-cancel-button,
+  .edit-save-button {
+    width: 100%;
+  }
+}
