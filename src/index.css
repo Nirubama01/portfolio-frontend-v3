@@ -1,18 +1,22 @@
 :root {
   --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --text-h: #24111b;
+  --bg: #fffafb;
+  --border: #f0dce5;
+  --code-bg: #fff0f5;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  /* Pink theme */
+  --accent: #e83e8c;
+  --accent-bg: rgba(232, 62, 140, 0.12);
+  --accent-border: rgba(232, 62, 140, 0.5);
+
+  --social-bg: rgba(255, 224, 235, 0.55);
+  --shadow:
+    rgba(116, 25, 69, 0.12) 0 10px 15px -3px,
+    rgba(116, 25, 69, 0.06) 0 4px 6px -2px;
+
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -24,25 +28,30 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
 
-  @media (max-width: 1024px) {
+@media (max-width: 1024px) {
+  :root {
     font-size: 16px;
   }
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
+    --text: #d6b9c7;
+    --text-h: #fff1f7;
+    --bg: #1d1117;
+    --border: #482633;
+    --code-bg: #2a1720;
+
+    --accent: #ff79b0;
+    --accent-bg: rgba(255, 121, 176, 0.16);
+    --accent-border: rgba(255, 121, 176, 0.52);
+
+    --social-bg: rgba(72, 38, 51, 0.55);
     --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+      rgba(0, 0, 0, 0.45) 0 10px 15px -3px,
+      rgba(0, 0, 0, 0.28) 0 4px 6px -2px;
   }
 
   #social .button-icon {
@@ -77,20 +86,15 @@ h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
 }
+
 p {
   margin: 0;
 }
@@ -110,7 +114,10 @@ code {
   background: var(--code-bg);
 }
 
-/* App layout */
+/* =========================
+   GENERAL REUSABLE STYLES
+========================= */
+
 .app-page {
   width: 100%;
   padding: 32px;
@@ -131,7 +138,6 @@ code {
   margin-bottom: 28px;
 }
 
-/* Reusable card */
 .card {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -140,7 +146,6 @@ code {
   box-shadow: var(--shadow);
 }
 
-/* Buttons */
 .primary-button {
   background: var(--accent);
   color: white;
@@ -152,16 +157,6 @@ code {
   border: 1px solid var(--accent-border);
 }
 
-/* Responsive mobile spacing */
-@media (max-width: 1024px) {
-  .app-page {
-    padding: 20px 16px;
-  }
-
-  .card {
-    padding: 18px;
-  }
-}
 /* =========================
    DASHBOARD PAGE
 ========================= */
@@ -284,25 +279,6 @@ code {
   border-color: var(--accent-border);
 }
 
-@media (max-width: 800px) {
-  .dashboard-page {
-    padding: 20px 16px;
-  }
-
-  .dashboard-hero {
-    padding: 24px;
-    flex-direction: column;
-  }
-
-  .dashboard-actions {
-    grid-template-columns: 1fr;
-  }
-
-  .dashboard-card {
-    min-height: 135px;
-  }
-}
-
 /* =========================
    CREATE PORTFOLIO PAGE
 ========================= */
@@ -386,7 +362,9 @@ code {
 }
 
 .form-field input,
-.form-field textarea {
+.form-field textarea,
+.edit-form-field input,
+.edit-form-field textarea {
   width: 100%;
   box-sizing: border-box;
   padding: 12px 14px;
@@ -398,13 +376,16 @@ code {
   font: inherit;
 }
 
-.form-field textarea {
+.form-field textarea,
+.edit-form-field textarea {
   min-height: 145px;
   resize: vertical;
 }
 
 .form-field input:focus,
-.form-field textarea:focus {
+.form-field textarea:focus,
+.edit-form-field input:focus,
+.edit-form-field textarea:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-bg);
 }
@@ -456,8 +437,10 @@ code {
   margin-top: 28px;
 }
 
-.publish-button {
-  padding: 13px 22px;
+.publish-button,
+.new-portfolio-button,
+.edit-save-button {
+  padding: 12px 18px;
   border: 1px solid var(--accent);
   border-radius: 10px;
   background: var(--accent);
@@ -468,42 +451,11 @@ code {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-.publish-button:hover {
+.publish-button:hover,
+.new-portfolio-button:hover,
+.edit-save-button:hover {
   transform: translateY(-2px);
   opacity: 0.92;
-}
-
-@media (max-width: 900px) {
-  .create-page {
-    padding: 24px 16px;
-  }
-
-  .create-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 560px) {
-  .create-form-card,
-  .template-card {
-    padding: 20px;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .template-heading {
-    flex-direction: column;
-  }
-
-  .create-footer {
-    justify-content: stretch;
-  }
-
-  .publish-button {
-    width: 100%;
-  }
 }
 
 /* =========================
@@ -546,21 +498,7 @@ code {
 }
 
 .new-portfolio-button {
-  padding: 12px 18px;
-  border: 1px solid var(--accent);
-  border-radius: 10px;
-  background: var(--accent);
-  color: white;
-  cursor: pointer;
-  font: inherit;
-  font-weight: 700;
   white-space: nowrap;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.new-portfolio-button:hover {
-  transform: translateY(-2px);
-  opacity: 0.92;
 }
 
 .portfolio-list {
@@ -605,10 +543,11 @@ code {
   color: var(--accent);
 }
 
-.delete-portfolio-button {
-  border: 1px solid #e89b9b;
+.delete-portfolio-button,
+.admin-delete-button {
+  border: 1px solid #f4a4c5;
   background: transparent;
-  color: #c73737;
+  color: #d63384;
 }
 
 .portfolio-message-card,
@@ -645,26 +584,6 @@ code {
   color: var(--accent);
   font-size: 30px;
   font-weight: 700;
-}
-
-@media (max-width: 800px) {
-  .portfolios-page {
-    padding: 24px 16px;
-  }
-
-  .portfolios-header {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .portfolio-item-actions {
-    justify-content: stretch;
-  }
-
-  .edit-portfolio-button,
-  .delete-portfolio-button {
-    flex: 1;
-  }
 }
 
 /* =========================
@@ -832,10 +751,7 @@ code {
 
 .admin-delete-button {
   padding: 8px 12px;
-  border: 1px solid #e89b9b;
   border-radius: 8px;
-  background: transparent;
-  color: #c73737;
   cursor: pointer;
   font: inherit;
   font-size: 13px;
@@ -843,7 +759,7 @@ code {
 }
 
 .admin-delete-button:hover {
-  background: rgba(199, 55, 55, 0.08);
+  background: rgba(214, 51, 132, 0.1);
 }
 
 .admin-loading {
@@ -851,25 +767,10 @@ code {
   text-align: center;
 }
 
-@media (max-width: 800px) {
-  .admin-page {
-    padding: 24px 16px;
-  }
+/* =========================
+   BACK BUTTON
+========================= */
 
-  .admin-stats {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-section {
-    padding: 18px;
-  }
-
-  .admin-section-heading {
-    flex-direction: column;
-  }
-}
-
-/* Reusable back button */
 .back-button {
   display: inline-flex;
   align-items: center;
@@ -965,30 +866,6 @@ code {
   font-weight: 700;
 }
 
-.edit-form-field input,
-.edit-form-field textarea {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  outline: none;
-  background: var(--bg);
-  color: var(--text-h);
-  font: inherit;
-}
-
-.edit-form-field textarea {
-  min-height: 160px;
-  resize: vertical;
-}
-
-.edit-form-field input:focus,
-.edit-form-field textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-bg);
-}
-
 .edit-actions {
   display: flex;
   justify-content: flex-end;
@@ -996,25 +873,15 @@ code {
   margin-top: 28px;
 }
 
-.edit-cancel-button,
-.edit-save-button {
+.edit-cancel-button {
   padding: 11px 17px;
+  border: 1px solid var(--border);
   border-radius: 10px;
+  background: transparent;
+  color: var(--text-h);
   cursor: pointer;
   font: inherit;
   font-weight: 700;
-}
-
-.edit-cancel-button {
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text-h);
-}
-
-.edit-save-button {
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: white;
 }
 
 .edit-save-button:disabled {
@@ -1022,9 +889,84 @@ code {
   opacity: 0.65;
 }
 
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 36px;
+    margin: 20px 0;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .app-page {
+    padding: 20px 16px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .create-page {
+    padding: 24px 16px;
+  }
+
+  .create-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 800px) {
+  .dashboard-page,
+  .portfolios-page,
+  .admin-page,
   .edit-page {
     padding: 24px 16px;
+  }
+
+  .dashboard-hero {
+    padding: 24px;
+    flex-direction: column;
+  }
+
+  .dashboard-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card {
+    min-height: 135px;
+  }
+
+  .portfolios-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .portfolio-item-actions {
+    justify-content: stretch;
+  }
+
+  .edit-portfolio-button,
+  .delete-portfolio-button {
+    flex: 1;
+  }
+
+  .admin-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-section {
+    padding: 18px;
+  }
+
+  .admin-section-heading {
+    flex-direction: column;
   }
 
   .edit-form-card {
@@ -1037,6 +979,29 @@ code {
 
   .edit-cancel-button,
   .edit-save-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .create-form-card,
+  .template-card {
+    padding: 20px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .template-heading {
+    flex-direction: column;
+  }
+
+  .create-footer {
+    justify-content: stretch;
+  }
+
+  .publish-button {
     width: 100%;
   }
 }
