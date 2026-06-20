@@ -1,186 +1,295 @@
 import { useEffect, useState } from "react";
 
+const API_URL =
+  "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio";
+
 function AdminDashboard() {
   const [users, setUsers] = useState([]);
   const [portfolios, setPortfolios] = useState([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [loadingPortfolios, setLoadingPortfolios] = useState(true);
+
+  
+
+  
 
   useEffect(() => {
-    fetch(
-      "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio/users"
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        const usersData = JSON.parse(data.body);
-        setUsers(usersData);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
+    const loadAdminData = async () => {
+      try {
+        const [usersResponse, portfoliosResponse] =
+          await Promise.all([
+            fetch(`${API_URL}/users`),
+            fetch(`${API_URL}/all`),
+          ]);
+
+        const usersResult = await usersResponse.json();
+        const portfoliosResult =
+          await portfoliosResponse.json();
+
+        const usersData =
+          typeof usersResult.body === "string"
+            ? JSON.parse(usersResult.body)
+            : usersResult.body;
+
+        const portfoliosData =
+          typeof portfoliosResult.body === "string"
+            ? JSON.parse(portfoliosResult.body)
+            : portfoliosResult.body;
+
+        setUsers(
+          Array.isArray(usersData) ? usersData : []
+        );
+
+        setPortfolios(
+          Array.isArray(portfoliosData)
+            ? portfoliosData
+            : []
+        );
+      } catch (error) {
+        console.error(error);
+        setUsers([]);
+        setPortfolios([]);
+      } finally {
+        setLoadingUsers(false);
+        setLoadingPortfolios(false);
+      }
+    };
+
+    // Start the API request after this effect finishes.
+    Promise.resolve().then(loadAdminData);
   }, []);
 
-  useEffect(() => {
-  fetch(
-    "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio/all"
-  )
-    .then((res) => res.json())
-    .then((data) => {
-      const portfolioData =
-        JSON.parse(data.body);
-
-      console.log(
-        "PORTFOLIOS:",
-        portfolioData
-      );
-
-      setPortfolios(
-        portfolioData
-      );
-    })
-    .catch((err) =>
-      console.error(err)
+  const deletePortfolio = async (userId, portfolioId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this portfolio?"
     );
-}, []);
 
-const deletePortfolio = async (
-  userId,
-  portfolioId
-) => {
-  try {
-    await fetch(
-      "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio",
-      {
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(API_URL, {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           userId,
-          portfolioId
-        })
+          portfolioId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not delete portfolio");
       }
+
+      setPortfolios((currentPortfolios) =>
+        currentPortfolios.filter(
+          (portfolio) =>
+            portfolio.portfolioId !== portfolioId
+        )
+      );
+
+      alert("Portfolio deleted successfully.");
+    } catch (error) {
+      console.error(error);
+      alert("Could not delete the portfolio.");
+    }
+  };
+
+  const deleteUser = async (userId) => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this user?"
     );
 
-    alert("Portfolio Deleted");
-loadPortfolios();
+    if (!confirmed) return;
 
-    loadPortfolios();
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const deleteUser = async (userId) => {
-  try {
-    const response = await fetch(
-      "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio/users",
-      {
+    try {
+      const response = await fetch(`${API_URL}/users`, {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          userId
-        })
+          userId,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Could not delete user");
       }
-    );
 
-    const data = await response.json();
+      setUsers((currentUsers) =>
+        currentUsers.filter(
+          (user) => user.userId !== userId
+        )
+      );
 
-    console.log(data);
+      // Also remove that user's portfolios from the displayed list.
+      setPortfolios((currentPortfolios) =>
+        currentPortfolios.filter(
+          (portfolio) => portfolio.userId !== userId
+        )
+      );
 
-    alert("User Deleted");
-
-    loadUsers();
-
-  } catch (error) {
-    console.error(error);
-  }
-};
+      alert("User deleted successfully.");
+    } catch (error) {
+      console.error(error);
+      alert("Could not delete the user.");
+    }
+  };
 
   return (
-    <div style={{ padding: "20px" }}>
-        <div style={{ textAlign: "center", marginBottom: "30px" }}>
-  <h2>Statistics</h2>
+    <main className="admin-page">
+      <section className="admin-header">
+        <div>
+          <p className="admin-eyebrow">ADMINISTRATION</p>
 
-  <div>
-    <h3>Total Users: {users.length}</h3>
-    <h3>Total Portfolios: {portfolios.length}</h3>
-  </div>
-</div>
-      <h1>Admin Dashboard</h1>
+          <h1>Admin Dashboard</h1>
 
-      <h2>All Users</h2>
+          <p>
+            Manage registered users and review every portfolio
+            created in the system.
+          </p>
+        </div>
+      </section>
 
-      <table border="1" cellPadding="10">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>User Id</th>
-            <th>Action</th>
-          </tr>
-        </thead>
+      <section className="admin-stats">
+        <article className="admin-stat-card">
+          <span>Total Users</span>
+          <strong>{users.length}</strong>
+          <small>Registered accounts</small>
+        </article>
 
-        <tbody>
-  {users.map((user) => (
-    <tr key={user.userId}>
-      <td>{user.name}</td>
-      <td>{user.email}</td>
-      <td>{user.userId}</td>
+        <article className="admin-stat-card">
+          <span>Total Portfolios</span>
+          <strong>{portfolios.length}</strong>
+          <small>Projects in the system</small>
+        </article>
+      </section>
 
-      <td>
-  <button
-    onClick={() =>
-      deleteUser(user.userId)
-    }
-  >
-    Delete
-  </button>
-</td>
-    </tr>
-  ))}
-</tbody>
-      </table>
+      <section className="admin-section">
+        <div className="admin-section-heading">
+          <div>
+            <h2>All Users</h2>
+            <p>Registered users in your application.</p>
+          </div>
 
-      <h2>All Portfolios</h2>
+          <span className="admin-count">
+            {users.length} users
+          </span>
+        </div>
 
-<table border="1" cellPadding="10">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Description</th>
-      <th>Language</th>
-      <th>User Id</th>
-      <th>Action</th>
-    </tr>
-  </thead>
+        <div className="admin-table-wrapper">
+          {loadingUsers ? (
+            <p className="admin-loading">Loading users...</p>
+          ) : users.length === 0 ? (
+            <p className="admin-loading">No users found.</p>
+          ) : (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>User ID</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
 
-  <tbody>
-  {portfolios.map((portfolio) => (
-    <tr key={portfolio.portfolioId}>
-      <td>{portfolio.title}</td>
-      <td>{portfolio.description}</td>
-      <td>{portfolio.language}</td>
-      <td>{portfolio.userId}</td>
+              <tbody>
+                {users.map((user) => (
+                  <tr key={user.userId}>
+                    <td>{user.name || "—"}</td>
+                    <td>{user.email || "—"}</td>
+                    <td className="admin-id">
+                      {user.userId}
+                    </td>
+                    <td>
+                      <button
+                        className="admin-delete-button"
+                        onClick={() =>
+                          deleteUser(user.userId)
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </section>
 
-      <td>
-        <button
-          onClick={() =>
-            deletePortfolio(
-              portfolio.userId,
-              portfolio.portfolioId
-            )
-          }
-        >
-          Delete
-        </button>
-      </td>
+      <section className="admin-section">
+        <div className="admin-section-heading">
+          <div>
+            <h2>All Portfolios</h2>
+            <p>Every portfolio created by all users.</p>
+          </div>
 
-    </tr>
-  ))}
-</tbody>
-</table>
-    </div>
+          <span className="admin-count">
+            {portfolios.length} portfolios
+          </span>
+        </div>
+
+        <div className="admin-table-wrapper">
+          {loadingPortfolios ? (
+            <p className="admin-loading">
+              Loading portfolios...
+            </p>
+          ) : portfolios.length === 0 ? (
+            <p className="admin-loading">
+              No portfolios found.
+            </p>
+          ) : (
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Description</th>
+                  <th>Language</th>
+                  <th>User ID</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {portfolios.map((portfolio) => (
+                  <tr key={portfolio.portfolioId}>
+                    <td>{portfolio.title || "Untitled"}</td>
+
+                    <td className="admin-description">
+                      {portfolio.description || "—"}
+                    </td>
+
+                    <td>{portfolio.language || "—"}</td>
+
+                    <td className="admin-id">
+                      {portfolio.userId}
+                    </td>
+
+                    <td>
+                      <button
+                        className="admin-delete-button"
+                        onClick={() =>
+                          deletePortfolio(
+                            portfolio.userId,
+                            portfolio.portfolioId
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      </section>
+    </main>
   );
 }
 
