@@ -109,3 +109,56 @@ code {
   padding: 4px 8px;
   background: var(--code-bg);
 }
+
+/* App layout */
+.app-page {
+  width: 100%;
+  padding: 32px;
+  text-align: left;
+}
+
+.page-container {
+  width: min(100%, 960px);
+  margin: 0 auto;
+}
+
+.page-title {
+  margin-bottom: 8px;
+}
+
+.page-subtitle {
+  color: var(--text);
+  margin-bottom: 28px;
+}
+
+/* Reusable card */
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+/* Buttons */
+.primary-button {
+  background: var(--accent);
+  color: white;
+}
+
+.secondary-button {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid var(--accent-border);
+}
+
+/* Responsive mobile spacing */
+@media (max-width: 1024px) {
+  .app-page {
+    padding: 20px 16px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+}
