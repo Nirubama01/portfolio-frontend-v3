@@ -20,33 +20,25 @@ function Dashboard() {
   };
 
   useEffect(() => {
-    const params = new URLSearchParams(
-      window.location.search
-    );
-
+    const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
 
     if (!code) {
       return;
     }
 
-    fetch(
-      `${cognitoConfig.domain}/oauth2/token`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          client_id: cognitoConfig.clientId,
-          code: code,
-          redirect_uri:
-            cognitoConfig.redirectUri,
-        }),
-      }
-    )
+    fetch(`${cognitoConfig.domain}/oauth2/token`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        grant_type: "authorization_code",
+        client_id: cognitoConfig.clientId,
+        code: code,
+        redirect_uri: cognitoConfig.redirectUri,
+      }),
+    })
       .then(async (response) => {
         const data = await response.json();
         console.log("TOKEN RESPONSE", data);
@@ -70,7 +62,8 @@ function Dashboard() {
         localStorage.setItem("isAdmin", String(admin));
         setIsAdmin(admin);
 
-        console.log("Admin:", admin);
+        // Removes ?code=... from the browser URL after login.
+        window.history.replaceState({}, document.title, "/dashboard");
       })
       .catch((error) => {
         console.error(error);
@@ -78,36 +71,64 @@ function Dashboard() {
   }, []);
 
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h2>Welcome to Portfolio Management System</h2>
+    <main className="dashboard-page">
+      <section className="dashboard-hero">
+        <div>
+          <p className="dashboard-eyebrow">PORTFOLIO MANAGEMENT</p>
 
-      <button onClick={() => navigate("/create-portfolio")}>
-        Create Portfolio
-      </button>
+          <h1>Welcome back!</h1>
 
-      <br />
-      <br />
+          <p className="dashboard-description">
+            Create, organize, and manage your portfolio projects from one
+            place.
+          </p>
+        </div>
 
-      <button onClick={() => navigate("/my-portfolios")}>
-        My Portfolios
-      </button>
+        <button className="logout-button" onClick={logout}>
+          Logout
+        </button>
+      </section>
 
-      {isAdmin && (
-        <>
-          <br />
-          <br />
-          <button onClick={() => navigate("/admin")}>
-            Admin Dashboard
+      <section className="dashboard-actions">
+        <button
+          className="dashboard-card create-card"
+          onClick={() => navigate("/create-portfolio")}
+        >
+          <span className="dashboard-icon">+</span>
+
+          <span>
+            <strong>Create Portfolio</strong>
+            <small>Add a new project to your portfolio</small>
+          </span>
+        </button>
+
+        <button
+          className="dashboard-card portfolios-card"
+          onClick={() => navigate("/my-portfolios")}
+        >
+          <span className="dashboard-icon">▣</span>
+
+          <span>
+            <strong>My Portfolios</strong>
+            <small>View, edit, and delete your projects</small>
+          </span>
+        </button>
+
+        {isAdmin && (
+          <button
+            className="dashboard-card admin-card"
+            onClick={() => navigate("/admin")}
+          >
+            <span className="dashboard-icon">♙</span>
+
+            <span>
+              <strong>Admin Dashboard</strong>
+              <small>Manage all users and portfolio records</small>
+            </span>
           </button>
-        </>
-      )}
-
-      <br />
-      <br />
-
-      <button onClick={logout}>Logout</button>
-    </div>
+        )}
+      </section>
+    </main>
   );
 }
 
