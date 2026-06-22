@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { cognitoConfig } from "../cognitoConfig";
 import { jwtDecode } from "jwt-decode";
+import { getSettings } from "../services/settingsApi";
 
 function Dashboard() {
   const navigate = useNavigate();
@@ -9,15 +10,38 @@ function Dashboard() {
   const [isAdmin, setIsAdmin] = useState(
     localStorage.getItem("isAdmin") === "true"
   );
+  const [nickname, setNickname] = useState("");
 
   const logout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("id_token");
     localStorage.removeItem("cognito_code");
     localStorage.removeItem("isAdmin");
+    localStorage.removeItem("nickname");
+    localStorage.removeItem("appTheme");
+    localStorage.removeItem("fontColor");
 
     navigate("/");
   };
+
+  async function loadNickname() {
+    try {
+      const data = await getSettings();
+
+      setNickname(data.nickname || "");
+      localStorage.setItem("nickname", data.nickname || "");
+      localStorage.setItem("appTheme", data.theme || "light");
+      localStorage.setItem("fontColor", data.fontColor || "#1f2937");
+    } catch (error) {
+      console.error("Could not load settings:", error);
+    }
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem("id_token")) {
+      loadNickname();
+    }
+  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -35,20 +59,22 @@ function Dashboard() {
       body: new URLSearchParams({
         grant_type: "authorization_code",
         client_id: cognitoConfig.clientId,
-        code: code,
+        code,
         redirect_uri: cognitoConfig.redirectUri,
       }),
     })
       .then(async (response) => {
         const data = await response.json();
-        console.log("TOKEN RESPONSE", data);
-        console.log("STATUS", response.status);
+
+        if (!response.ok) {
+          throw new Error(data.error_description || "Login failed.");
+        }
+
         return data;
       })
-      .then((data) => {
+      .then(async (data) => {
         if (!data.id_token) {
-          console.error("No id_token returned", data);
-          return;
+          throw new Error("No ID token returned from Cognito.");
         }
 
         const decodedToken = jwtDecode(data.id_token);
@@ -62,11 +88,14 @@ function Dashboard() {
         localStorage.setItem("isAdmin", String(admin));
         setIsAdmin(admin);
 
-        // Removes ?code=... from the browser URL after login.
+        // Remove ?code=... after successful login.
         window.history.replaceState({}, document.title, "/dashboard");
+
+        // Token is now stored, so this can securely call GET /settings.
+        await loadNickname();
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Login error:", error);
       });
   }, []);
 
@@ -76,7 +105,7 @@ function Dashboard() {
         <div>
           <p className="dashboard-eyebrow">PORTFOLIO MANAGEMENT</p>
 
-          <h1>Welcome back!</h1>
+          <h1>Welcome back{nickname ? `, ${nickname}` : ""}!</h1>
 
           <p className="dashboard-description">
             Create, organize, and manage your portfolio projects from one
@@ -115,16 +144,16 @@ function Dashboard() {
         </button>
 
         <button
-  className="dashboard-card settings-card"
-  onClick={() => navigate("/settings")}
->
-  <span className="dashboard-icon">⚙</span>
+          className="dashboard-card settings-card"
+          onClick={() => navigate("/settings")}
+        >
+          <span className="dashboard-icon">⚙</span>
 
-  <span>
-    <strong>Settings</strong>
-    <small>Customize your profile and app appearance</small>
-  </span>
-</button>
+          <span>
+            <strong>Settings</strong>
+            <small>Customize your profile and app appearance</small>
+          </span>
+        </button>
 
         {isAdmin && (
           <button
