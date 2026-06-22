@@ -50,6 +50,8 @@ function Settings() {
       localStorage.setItem("nickname", data.nickname);
       localStorage.setItem("appTheme", data.theme);
       localStorage.setItem("fontColor", data.fontColor);
+      document.documentElement.dataset.theme = data.theme;
+document.documentElement.style.setProperty("--text", data.fontColor);
 
       setMessage("Settings saved successfully.");
     } catch (err) {

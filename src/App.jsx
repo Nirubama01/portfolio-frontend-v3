@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
 
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -9,64 +10,67 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import Settings from "./pages/Settings";
 
-
 function App() {
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("appTheme") || "light";
+    const savedFontColor = localStorage.getItem("fontColor") || "#6b6375";
+
+    document.documentElement.dataset.theme = savedTheme;
+    document.documentElement.style.setProperty("--text", savedFontColor);
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
-  <Route path="/" element={<Login />} />
-  <Route
-  path="/dashboard"
-  element={
-    
-      <Dashboard />
-    
-  }
-/>
-  <Route
-  path="/create-portfolio"
-  element={
-    <ProtectedRoute>
-      <CreatePortfolio />
-    </ProtectedRoute>
-  }
-/>
-<Route
-  path="/my-portfolios"
-  element={
-    <ProtectedRoute>
-      <MyPortfolios />
-    </ProtectedRoute>
-  }
-/>
-  <Route
-  path="/edit-portfolio"
-  element={
-    <ProtectedRoute>
-      <EditPortfolio />
-    </ProtectedRoute>
-  }
-/>
+        <Route path="/" element={<Login />} />
 
-<Route
-  path="/admin"
-  element={
-    <ProtectedRoute>
-      <AdminDashboard />
-    </ProtectedRoute>
-  }
-/>
+        <Route path="/dashboard" element={<Dashboard />} />
 
-<Route
-  path="/settings"
-  element={
-    <ProtectedRoute>
-      <Settings />
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/create-portfolio"
+          element={
+            <ProtectedRoute>
+              <CreatePortfolio />
+            </ProtectedRoute>
+          }
+        />
 
-</Routes>
+        <Route
+          path="/my-portfolios"
+          element={
+            <ProtectedRoute>
+              <MyPortfolios />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/edit-portfolio"
+          element={
+            <ProtectedRoute>
+              <EditPortfolio />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <AdminDashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
     </BrowserRouter>
   );
 }

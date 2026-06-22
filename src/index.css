@@ -1227,3 +1227,27 @@ code {
     width: 100%;
   }
 }
+/* User-selected appearance from Settings */
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --text: #d6b9c7;
+  --text-h: #fff1f7;
+  --bg: #1d1117;
+  --border: #482633;
+  --code-bg: #2a1720;
+
+  --accent: #ff79b0;
+  --accent-bg: rgba(255, 121, 176, 0.16);
+  --accent-border: rgba(255, 121, 176, 0.52);
+
+  --social-bg: rgba(72, 38, 51, 0.55);
+  --shadow:
+    rgba(0, 0, 0, 0.45) 0 10px 15px -3px,
+    rgba(0, 0, 0, 0.28) 0 4px 6px -2px;
+}
