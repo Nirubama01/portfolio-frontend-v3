@@ -16,7 +16,6 @@ function getHeaders() {
 
 async function readResponse(response) {
   const text = await response.text();
-
   let data;
 
   try {
@@ -33,6 +32,7 @@ async function readResponse(response) {
 
   return data;
 }
+
 export async function getSettings() {
   const response = await fetch(`${API_BASE_URL}/settings`, {
     method: "GET",
@@ -42,7 +42,12 @@ export async function getSettings() {
   return readResponse(response);
 }
 
-export async function saveSettings({ nickname, theme, fontColor }) {
+export async function saveSettings({
+  nickname,
+  theme,
+  fontColor,
+  profileImageKey,
+}) {
   const response = await fetch(`${API_BASE_URL}/settings`, {
     method: "PUT",
     headers: getHeaders(),
@@ -50,8 +55,35 @@ export async function saveSettings({ nickname, theme, fontColor }) {
       nickname,
       theme,
       fontColor,
+      profileImageKey,
     }),
   });
 
   return readResponse(response);
+}
+
+export async function getProfileUploadUrl(contentType) {
+  const response = await fetch(`${API_BASE_URL}/settings`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({
+      contentType,
+    }),
+  });
+
+  return readResponse(response);
+}
+
+export async function uploadProfileImage(uploadUrl, file) {
+  const response = await fetch(uploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Type": file.type,
+    },
+    body: file,
+  });
+
+  if (!response.ok) {
+    throw new Error("Image upload to S3 failed.");
+  }
 }
