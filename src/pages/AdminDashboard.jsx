@@ -7,59 +7,95 @@ const API_URL =
 
 function AdminDashboard() {
   const navigate = useNavigate();
+
   const [users, setUsers] = useState([]);
   const [portfolios, setPortfolios] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingPortfolios, setLoadingPortfolios] = useState(true);
+  const [error, setError] = useState("");
 
-  
+  function getHeaders() {
+    const idToken = localStorage.getItem("id_token");
 
-  
+    if (!idToken) {
+      throw new Error("You are not logged in.");
+    }
+
+    return {
+      "Content-Type": "application/json",
+      Authorization: idToken,
+    };
+  }
+
+  async function readApiResponse(response) {
+    const text = await response.text();
+
+    let data;
+
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = { message: text };
+    }
+
+    /*
+      This handles the old non-proxy API Gateway response format too:
+      { statusCode: 403, body: "{\"message\":\"...\"}" }
+    */
+    if (data?.statusCode && typeof data.body === "string") {
+      try {
+        const innerBody = JSON.parse(data.body);
+
+        if (data.statusCode >= 400) {
+          throw new Error(innerBody.message || "Admin API request failed.");
+        }
+
+        data = innerBody;
+      } catch (parseError) {
+        if (data.statusCode >= 400) {
+          throw parseError;
+        }
+      }
+    }
+
+    if (!response.ok) {
+      throw new Error(data.message || `Request failed (${response.status})`);
+    }
+
+    return data;
+  }
 
   useEffect(() => {
-    const loadAdminData = async () => {
+    async function loadAdminData() {
       try {
-        const [usersResponse, portfoliosResponse] =
-          await Promise.all([
-            fetch(`${API_URL}/users`),
-            fetch(`${API_URL}/all`),
-          ]);
+        setError("");
 
-        const usersResult = await usersResponse.json();
-        const portfoliosResult =
-          await portfoliosResponse.json();
+        const headers = getHeaders();
 
-        const usersData =
-          typeof usersResult.body === "string"
-            ? JSON.parse(usersResult.body)
-            : usersResult.body;
+        const [usersResponse, portfoliosResponse] = await Promise.all([
+          fetch(`${API_URL}/users`, { headers }),
+          fetch(`${API_URL}/all`, { headers }),
+        ]);
 
-        const portfoliosData =
-          typeof portfoliosResult.body === "string"
-            ? JSON.parse(portfoliosResult.body)
-            : portfoliosResult.body;
+        const [usersData, portfoliosData] = await Promise.all([
+          readApiResponse(usersResponse),
+          readApiResponse(portfoliosResponse),
+        ]);
 
-        setUsers(
-          Array.isArray(usersData) ? usersData : []
-        );
-
-        setPortfolios(
-          Array.isArray(portfoliosData)
-            ? portfoliosData
-            : []
-        );
-      } catch (error) {
-        console.error(error);
+        setUsers(Array.isArray(usersData) ? usersData : []);
+        setPortfolios(Array.isArray(portfoliosData) ? portfoliosData : []);
+      } catch (err) {
+        console.error("Could not load admin data:", err);
+        setError(err.message || "Could not load admin data.");
         setUsers([]);
         setPortfolios([]);
       } finally {
         setLoadingUsers(false);
         setLoadingPortfolios(false);
       }
-    };
+    }
 
-    // Start the API request after this effect finishes.
-    Promise.resolve().then(loadAdminData);
+    loadAdminData();
   }, []);
 
   const deletePortfolio = async (userId, portfolioId) => {
@@ -72,30 +108,25 @@ function AdminDashboard() {
     try {
       const response = await fetch(API_URL, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getHeaders(),
         body: JSON.stringify({
           userId,
           portfolioId,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Could not delete portfolio");
-      }
+      await readApiResponse(response);
 
       setPortfolios((currentPortfolios) =>
         currentPortfolios.filter(
-          (portfolio) =>
-            portfolio.portfolioId !== portfolioId
+          (portfolio) => portfolio.portfolioId !== portfolioId
         )
       );
 
       alert("Portfolio deleted successfully.");
-    } catch (error) {
-      console.error(error);
-      alert("Could not delete the portfolio.");
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Could not delete the portfolio.");
     }
   };
 
@@ -109,53 +140,45 @@ function AdminDashboard() {
     try {
       const response = await fetch(`${API_URL}/users`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: getHeaders(),
         body: JSON.stringify({
           userId,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Could not delete user");
-      }
+      await readApiResponse(response);
 
       setUsers((currentUsers) =>
-        currentUsers.filter(
-          (user) => user.userId !== userId
-        )
+        currentUsers.filter((user) => user.userId !== userId)
       );
 
-      // Also remove that user's portfolios from the displayed list.
       setPortfolios((currentPortfolios) =>
-        currentPortfolios.filter(
-          (portfolio) => portfolio.userId !== userId
-        )
+        currentPortfolios.filter((portfolio) => portfolio.userId !== userId)
       );
 
       alert("User deleted successfully.");
-    } catch (error) {
-      console.error(error);
-      alert("Could not delete the user.");
+    } catch (err) {
+      console.error(err);
+      alert(err.message || "Could not delete the user.");
     }
   };
 
   return (
     <main className="admin-page">
       <BackButton />
+
       <section className="admin-header">
         <div>
           <p className="admin-eyebrow">ADMINISTRATION</p>
-
           <h1>Admin Dashboard</h1>
-
           <p>
-            Manage registered users and review every portfolio
-            created in the system.
+            Manage registered users and review every portfolio created in the
+            system.
           </p>
         </div>
       </section>
+
+      {error && <p className="settings-message settings-error">{error}</p>}
 
       <section className="admin-stats">
         <article className="admin-stat-card">
@@ -178,9 +201,7 @@ function AdminDashboard() {
             <p>Registered users in your application.</p>
           </div>
 
-          <span className="admin-count">
-            {users.length} users
-          </span>
+          <span className="admin-count">{users.length} users</span>
         </div>
 
         <div className="admin-table-wrapper">
@@ -195,7 +216,7 @@ function AdminDashboard() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>User ID</th>
-                  <th>Actions</th>
+                  <th>Action</th>
                 </tr>
               </thead>
 
@@ -204,15 +225,11 @@ function AdminDashboard() {
                   <tr key={user.userId}>
                     <td>{user.name || "—"}</td>
                     <td>{user.email || "—"}</td>
-                    <td className="admin-id">
-                      {user.userId}
-                    </td>
+                    <td className="admin-id">{user.userId}</td>
                     <td>
                       <button
                         className="admin-delete-button"
-                        onClick={() =>
-                          deleteUser(user.userId)
-                        }
+                        onClick={() => deleteUser(user.userId)}
                       >
                         Delete
                       </button>
@@ -239,13 +256,9 @@ function AdminDashboard() {
 
         <div className="admin-table-wrapper">
           {loadingPortfolios ? (
-            <p className="admin-loading">
-              Loading portfolios...
-            </p>
+            <p className="admin-loading">Loading portfolios...</p>
           ) : portfolios.length === 0 ? (
-            <p className="admin-loading">
-              No portfolios found.
-            </p>
+            <p className="admin-loading">No portfolios found.</p>
           ) : (
             <table className="admin-table">
               <thead>
@@ -254,13 +267,13 @@ function AdminDashboard() {
                   <th>Description</th>
                   <th>Language</th>
                   <th>User ID</th>
-                  <th>Action</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
 
               <tbody>
                 {portfolios.map((portfolio) => (
-                  <tr key={portfolio.portfolioId}>
+                  <tr key={`${portfolio.userId}-${portfolio.portfolioId}`}>
                     <td>{portfolio.title || "Untitled"}</td>
 
                     <td className="admin-description">
@@ -269,36 +282,36 @@ function AdminDashboard() {
 
                     <td>{portfolio.language || "—"}</td>
 
-                    <td className="admin-id">
-                      {portfolio.userId}
-                    </td>
+                    <td className="admin-id">{portfolio.userId}</td>
 
                     <td className="admin-actions">
-  <button
-    className="admin-view-button"
-    onClick={() =>
-      navigate(
-        `/admin/portfolio?userId=${encodeURIComponent(
-          portfolio.userId
-        )}&portfolioId=${encodeURIComponent(portfolio.portfolioId)}`
-      )
-    }
-  >
-    View
-  </button>
+                      <button
+                        className="admin-view-button"
+                        onClick={() =>
+                          navigate(
+                            `/admin/portfolio?userId=${encodeURIComponent(
+                              portfolio.userId
+                            )}&portfolioId=${encodeURIComponent(
+                              portfolio.portfolioId
+                            )}`
+                          )
+                        }
+                      >
+                        View
+                      </button>
 
-  <button
-    className="admin-delete-button"
-    onClick={() =>
-      deletePortfolio(
-        portfolio.userId,
-        portfolio.portfolioId
-      )
-    }
-  >
-    Delete
-  </button>
-</td>
+                      <button
+                        className="admin-delete-button"
+                        onClick={() =>
+                          deletePortfolio(
+                            portfolio.userId,
+                            portfolio.portfolioId
+                          )
+                        }
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
