@@ -1,42 +1,51 @@
 const API_BASE_URL =
   "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod";
 
-function getAuthHeaders() {
-  const token = localStorage.getItem("access_token");
+function getHeaders() {
+  const idToken = localStorage.getItem("id_token");
 
-  if (!token) {
-    throw new Error("You are not logged in. Access token is missing.");
+  if (!idToken) {
+    throw new Error("You are not logged in.");
   }
 
   return {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
+    Authorization: idToken,
   };
 }
 
-async function handleResponse(response) {
-  const data = await response.json();
+async function readResponse(response) {
+  const text = await response.text();
+
+  let data;
+
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    data = { message: text };
+  }
 
   if (!response.ok) {
-    throw new Error(data.message || "Settings request failed");
+    throw new Error(
+      data.message || `Settings request failed (${response.status})`
+    );
   }
 
   return data;
 }
-
 export async function getSettings() {
   const response = await fetch(`${API_BASE_URL}/settings`, {
     method: "GET",
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
   });
 
-  return handleResponse(response);
+  return readResponse(response);
 }
 
 export async function saveSettings({ nickname, theme, fontColor }) {
   const response = await fetch(`${API_BASE_URL}/settings`, {
     method: "PUT",
-    headers: getAuthHeaders(),
+    headers: getHeaders(),
     body: JSON.stringify({
       nickname,
       theme,
@@ -44,5 +53,5 @@ export async function saveSettings({ nickname, theme, fontColor }) {
     }),
   });
 
-  return handleResponse(response);
+  return readResponse(response);
 }
