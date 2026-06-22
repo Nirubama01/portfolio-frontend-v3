@@ -108,6 +108,7 @@ function Settings() {
       localStorage.setItem("nickname", data.nickname || "");
       localStorage.setItem("appTheme", data.theme || "light");
       localStorage.setItem("fontColor", data.fontColor || "#1f2937");
+      localStorage.setItem("profileImageUrl", data.profileImageUrl || "");
 
       document.documentElement.dataset.theme = data.theme || "light";
       document.documentElement.style.setProperty(

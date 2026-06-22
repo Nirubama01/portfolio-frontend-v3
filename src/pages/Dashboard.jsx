@@ -13,6 +13,10 @@ function Dashboard() {
   const [nickname, setNickname] = useState(
   localStorage.getItem("nickname") || ""
 );
+
+const [profileImageUrl, setProfileImageUrl] = useState(
+  localStorage.getItem("profileImageUrl") || ""
+);
   const logout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("id_token");
@@ -25,18 +29,21 @@ function Dashboard() {
     navigate("/");
   };
 
-  async function loadNickname() {
-    try {
-      const data = await getSettings();
+ async function loadNickname() {
+  try {
+    const data = await getSettings();
 
-      setNickname(data.nickname || "");
-      localStorage.setItem("nickname", data.nickname || "");
-      localStorage.setItem("appTheme", data.theme || "light");
-      localStorage.setItem("fontColor", data.fontColor || "#1f2937");
-    } catch (error) {
-      console.error("Could not load settings:", error);
-    }
+    setNickname(data.nickname || "");
+    setProfileImageUrl(data.profileImageUrl || "");
+
+    localStorage.setItem("nickname", data.nickname || "");
+    localStorage.setItem("appTheme", data.theme || "light");
+    localStorage.setItem("fontColor", data.fontColor || "#1f2937");
+    localStorage.setItem("profileImageUrl", data.profileImageUrl || "");
+  } catch (error) {
+    console.error("Could not load settings:", error);
   }
+}
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -97,21 +104,30 @@ function Dashboard() {
   return (
     <main className="dashboard-page">
       <section className="dashboard-hero">
-        <div>
-          <p className="dashboard-eyebrow">PORTFOLIO MANAGEMENT</p>
+  <div className="dashboard-welcome">
+    <div className="dashboard-profile-image">
+      {profileImageUrl ? (
+        <img src={profileImageUrl} alt="Profile" />
+      ) : (
+        <span>{(nickname || "U").charAt(0).toUpperCase()}</span>
+      )}
+    </div>
 
-          <h1>Welcome back{nickname ? `, ${nickname}` : ""}!</h1>
+    <div>
+      <p className="dashboard-eyebrow">PORTFOLIO MANAGEMENT</p>
 
-          <p className="dashboard-description">
-            Create, organize, and manage your portfolio projects from one
-            place.
-          </p>
-        </div>
+      <h1>Welcome back{nickname ? `, ${nickname}` : ""}!</h1>
 
-        <button className="logout-button" onClick={logout}>
-          Logout
-        </button>
-      </section>
+      <p className="dashboard-description">
+        Create, organize, and manage your portfolio projects from one place.
+      </p>
+    </div>
+  </div>
+
+  <button className="logout-button" onClick={logout}>
+    Logout
+  </button>
+</section>
 
       <section className="dashboard-actions">
         <button
