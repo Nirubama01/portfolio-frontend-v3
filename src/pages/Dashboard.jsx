@@ -10,8 +10,9 @@ function Dashboard() {
   const [isAdmin, setIsAdmin] = useState(
     localStorage.getItem("isAdmin") === "true"
   );
-  const [nickname, setNickname] = useState("");
-
+  const [nickname, setNickname] = useState(
+  localStorage.getItem("nickname") || ""
+);
   const logout = () => {
     localStorage.removeItem("userId");
     localStorage.removeItem("id_token");
@@ -36,12 +37,6 @@ function Dashboard() {
       console.error("Could not load settings:", error);
     }
   }
-
-  useEffect(() => {
-    if (localStorage.getItem("id_token")) {
-      loadNickname();
-    }
-  }, []);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
