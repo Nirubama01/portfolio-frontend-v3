@@ -2,6 +2,15 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import BackButton from "../components/BackButton";
 
+import ClassicTemplate from "../templates/ClassicTemplate";
+import DarkTemplate from "../templates/DarkTemplate";
+import DeveloperTemplate from "../templates/DeveloperTemplate";
+import ModernTemplate from "../templates/ModernTemplate";
+import NeonTemplate from "../templates/NeonTemplate";
+import ResumeTemplate from "../templates/ResumeTemplate";
+import ShowcaseTemplate from "../templates/ShowcaseTemplate";
+import TerminalTemplate from "../templates/TerminalTemplate";
+
 const API_URL =
   "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio";
 
@@ -24,10 +33,6 @@ function AdminPortfolioView() {
           throw new Error("You are not logged in.");
         }
 
-        if (!userId || !portfolioId) {
-          throw new Error("Portfolio details are missing.");
-        }
-
         const response = await fetch(
           `${API_URL}/admin-view?userId=${encodeURIComponent(
             userId
@@ -39,26 +44,7 @@ function AdminPortfolioView() {
           }
         );
 
-        const text = await response.text();
-
-        let data = {};
-
-        try {
-          data = text ? JSON.parse(text) : {};
-        } catch {
-          data = { message: text };
-        }
-
-        // Handles old API Gateway non-proxy response format if it appears.
-        if (data?.statusCode && typeof data.body === "string") {
-          const nestedData = JSON.parse(data.body);
-
-          if (data.statusCode >= 400) {
-            throw new Error(nestedData.message || "Could not load portfolio.");
-          }
-
-          data = nestedData;
-        }
+        const data = await response.json();
 
         if (!response.ok) {
           throw new Error(data.message || "Could not load portfolio.");
@@ -66,7 +52,7 @@ function AdminPortfolioView() {
 
         setPortfolio(data);
       } catch (err) {
-        console.error("Could not load portfolio:", err);
+        console.error(err);
         setError(err.message || "Could not load portfolio.");
       } finally {
         setLoading(false);
@@ -80,7 +66,7 @@ function AdminPortfolioView() {
     return (
       <main className="admin-page">
         <BackButton />
-        <p className="admin-loading">Loading portfolio details...</p>
+        <p className="admin-loading">Loading portfolio preview...</p>
       </main>
     );
   }
@@ -94,66 +80,45 @@ function AdminPortfolioView() {
     );
   }
 
+  const template = String(portfolio.template || "classic").toLowerCase();
+
+  const templateProps = {
+    portfolio,
+    readOnly: true,
+  };
+
+  const templateMap = {
+    classic: <ClassicTemplate {...templateProps} />,
+    dark: <DarkTemplate {...templateProps} />,
+    developer: <DeveloperTemplate {...templateProps} />,
+    modern: <ModernTemplate {...templateProps} />,
+    neon: <NeonTemplate {...templateProps} />,
+    resume: <ResumeTemplate {...templateProps} />,
+    showcase: <ShowcaseTemplate {...templateProps} />,
+    terminal: <TerminalTemplate {...templateProps} />,
+  };
+
   return (
-    <main className="admin-page">
-      <BackButton />
+    <main className="admin-portfolio-preview-page">
+      <div className="admin-preview-toolbar">
+        <BackButton />
 
-      <section className="admin-header">
         <div>
-          <p className="admin-eyebrow">PORTFOLIO REVIEW</p>
-          <h1>{portfolio?.title || "Portfolio Details"}</h1>
-          <p>Viewing a portfolio created by a user.</p>
+          <p className="admin-eyebrow">ADMIN PORTFOLIO PREVIEW</p>
+          <p className="admin-preview-note">
+            Read-only view · Template: {template}
+          </p>
         </div>
-      </section>
+      </div>
 
-      <section className="admin-section">
-        <div className="admin-section-heading">
-          <div>
-            <h2>Project Information</h2>
-            <p>Read-only portfolio details.</p>
-          </div>
-        </div>
-
-        <div className="admin-detail-grid">
-          <article className="admin-detail-card">
-            <span>Title</span>
-            <strong>{portfolio?.title || "—"}</strong>
-          </article>
-
-          <article className="admin-detail-card">
-            <span>Language</span>
-            <strong>{portfolio?.language || "—"}</strong>
-          </article>
-
-          <article className="admin-detail-card">
-            <span>User ID</span>
-            <strong className="admin-id">{portfolio?.userId || "—"}</strong>
-          </article>
-
-          <article className="admin-detail-card">
-            <span>Portfolio ID</span>
-            <strong className="admin-id">
-              {portfolio?.portfolioId || "—"}
-            </strong>
-          </article>
-        </div>
-
-        <article className="admin-detail-description">
-          <span>Description</span>
-          <p>{portfolio?.description || "No description provided."}</p>
-        </article>
-
-        {portfolio?.link && (
-          <a
-            className="admin-view-button"
-            href={portfolio.link}
-            target="_blank"
-            rel="noreferrer"
-          >
-            Open Project Link
-          </a>
-        )}
-      </section>
+      {templateMap[template] || (
+        <section className="admin-section">
+          <h2>Template not found</h2>
+          <p>
+            This portfolio uses the template: <strong>{template}</strong>
+          </p>
+        </section>
+      )}
     </main>
   );
 }
