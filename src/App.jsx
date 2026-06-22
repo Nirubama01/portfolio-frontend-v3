@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AdminPortfolioView from "./pages/AdminPortfolioView";
 import { useEffect } from "react";
 
 import Login from "./pages/Login";
@@ -70,6 +71,14 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+  path="/admin/portfolio"
+  element={
+    <ProtectedRoute>
+      <AdminPortfolioView />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </BrowserRouter>
   );
