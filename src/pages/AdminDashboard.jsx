@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import BackButton from "../components/BackButton";
 
 const API_URL =
   "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio";
 
 function AdminDashboard() {
+  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [portfolios, setPortfolios] = useState([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
@@ -193,7 +195,7 @@ function AdminDashboard() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>User ID</th>
-                  <th>Action</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
 
@@ -271,19 +273,32 @@ function AdminDashboard() {
                       {portfolio.userId}
                     </td>
 
-                    <td>
-                      <button
-                        className="admin-delete-button"
-                        onClick={() =>
-                          deletePortfolio(
-                            portfolio.userId,
-                            portfolio.portfolioId
-                          )
-                        }
-                      >
-                        Delete
-                      </button>
-                    </td>
+                    <td className="admin-actions">
+  <button
+    className="admin-view-button"
+    onClick={() =>
+      navigate(
+        `/admin/portfolio?userId=${encodeURIComponent(
+          portfolio.userId
+        )}&portfolioId=${encodeURIComponent(portfolio.portfolioId)}`
+      )
+    }
+  >
+    View
+  </button>
+
+  <button
+    className="admin-delete-button"
+    onClick={() =>
+      deletePortfolio(
+        portfolio.userId,
+        portfolio.portfolioId
+      )
+    }
+  >
+    Delete
+  </button>
+</td>
                   </tr>
                 ))}
               </tbody>
