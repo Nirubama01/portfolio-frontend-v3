@@ -286,19 +286,21 @@ function AdminDashboard() {
 
                     <td className="admin-actions">
                       <button
-                        className="admin-view-button"
-                        onClick={() =>
-                          navigate(
-                            `/admin/portfolio?userId=${encodeURIComponent(
-                              portfolio.userId
-                            )}&portfolioId=${encodeURIComponent(
-                              portfolio.portfolioId
-                            )}`
-                          )
-                        }
-                      >
-                        View
-                      </button>
+  className="admin-view-button"
+  onClick={() =>
+    navigate(
+      `/admin/portfolio?userId=${encodeURIComponent(
+        portfolio.userId
+      )}&portfolioId=${encodeURIComponent(
+        portfolio.portfolioId
+      )}`
+    )
+  }
+  title="Preview this portfolio"
+>
+  <span className="admin-action-icon">◉</span>
+  Preview
+</button>
 
                       <button
                         className="admin-delete-button"

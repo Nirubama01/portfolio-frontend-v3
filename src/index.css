@@ -1349,3 +1349,70 @@ code {
     align-items: flex-start;
   }
 }
+.admin-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+}
+
+.admin-view-button,
+.admin-delete-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 96px;
+  min-height: 38px;
+  padding: 9px 13px;
+  border-radius: 10px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-view-button {
+  border: 1px solid #ec4899;
+  background: linear-gradient(135deg, #f472b6, #db2777);
+  color: #ffffff;
+  box-shadow: 0 6px 14px rgba(219, 39, 119, 0.22);
+}
+
+.admin-view-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(219, 39, 119, 0.32);
+}
+
+.admin-view-button:active {
+  transform: translateY(0);
+}
+
+.admin-delete-button {
+  border: 1px solid #fecdd3;
+  background: #fff1f2;
+  color: #be123c;
+}
+
+.admin-delete-button:hover {
+  transform: translateY(-2px);
+  background: #ffe4e6;
+  box-shadow: 0 8px 16px rgba(190, 18, 60, 0.12);
+}
+
+.admin-action-icon {
+  font-size: 0.92rem;
+  line-height: 1;
+}
+
+@media (max-width: 700px) {
+  .admin-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .admin-view-button,
+  .admin-delete-button {
+    width: 100%;
+  }
+}
