@@ -13,7 +13,7 @@ function NeonTemplate({ portfolio }) {
           "0 0 20px #00ffff"
       }}
     >
-      <h2>{portfolio.title}</h2>
+      <h2 style={{color:"#00ffff"}}>{portfolio.title}</h2>
 
       {portfolio.images &&
         portfolio.images.length > 0 && (
