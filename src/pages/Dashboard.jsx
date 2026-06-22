@@ -114,6 +114,18 @@ function Dashboard() {
           </span>
         </button>
 
+        <button
+  className="dashboard-card settings-card"
+  onClick={() => navigate("/settings")}
+>
+  <span className="dashboard-icon">⚙</span>
+
+  <span>
+    <strong>Settings</strong>
+    <small>Customize your profile and app appearance</small>
+  </span>
+</button>
+
         {isAdmin && (
           <button
             className="dashboard-card admin-card"

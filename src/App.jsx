@@ -7,6 +7,7 @@ import MyPortfolios from "./pages/MyPortfolios";
 import EditPortfolio from "./pages/EditPortfolio";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
+import Settings from "./pages/Settings";
 
 
 function App() {
@@ -52,6 +53,15 @@ function App() {
   element={
     <ProtectedRoute>
       <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/settings"
+  element={
+    <ProtectedRoute>
+      <Settings />
     </ProtectedRoute>
   }
 />
