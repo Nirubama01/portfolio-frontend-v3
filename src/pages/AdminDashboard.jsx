@@ -13,6 +13,10 @@ function AdminDashboard() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingPortfolios, setLoadingPortfolios] = useState(true);
   const [error, setError] = useState("");
+  const [adminQuestion, setAdminQuestion] = useState("");
+const [adminAnswer, setAdminAnswer] = useState("");
+const [adminChatLoading, setAdminChatLoading] = useState(false);
+const [adminChatError, setAdminChatError] = useState("");
 
   function getHeaders() {
     const idToken = localStorage.getItem("id_token");
@@ -202,6 +206,59 @@ function AdminDashboard() {
     alert(err.message || "Could not update chatbot access.");
   }
 };
+const askAdminPortfolioAssistant = async () => {
+  const question = adminQuestion.trim();
+
+  if (!question) return;
+
+  try {
+    setAdminChatLoading(true);
+    setAdminChatError("");
+    setAdminAnswer("");
+
+    /* Send only useful fields, not full user data */
+    const portfolioSummary = portfolios.map((portfolio) => ({
+      title: portfolio.title || "Untitled",
+      description: portfolio.description || "",
+      language: portfolio.language || "",
+      tools: Array.isArray(portfolio.tools)
+        ? portfolio.tools.join(", ")
+        : portfolio.tools || "",
+      template: portfolio.template || "classic",
+      createdAt: portfolio.createdAt || "",
+    }));
+
+    const message = `
+You are an admin assistant for a portfolio management application.
+
+Answer only using the portfolio data below.
+If the answer is not available in the data, clearly say that.
+
+Portfolio data:
+${JSON.stringify(portfolioSummary)}
+
+Admin question:
+${question}
+`;
+
+    const response = await fetch(`${API_URL}/chatbot`, {
+      method: "POST",
+      headers: getHeaders(),
+      body: JSON.stringify({ message }),
+    });
+
+    const data = await readApiResponse(response);
+
+    setAdminAnswer(data.reply || "No answer received.");
+  } catch (error) {
+    console.error("Admin chatbot error:", error);
+    setAdminChatError(
+      error.message || "Could not contact the portfolio assistant."
+    );
+  } finally {
+    setAdminChatLoading(false);
+  }
+};
 
   return (
     <main className="admin-page">
@@ -219,6 +276,81 @@ function AdminDashboard() {
       </section>
 
       {error && <p className="settings-message settings-error">{error}</p>}
+
+      <section className="admin-chatbot-card">
+  <div className="admin-chatbot-heading">
+    <div>
+      <p className="admin-eyebrow">AI ADMIN ASSISTANT</p>
+      <h2>Ask about portfolios</h2>
+      <p>
+        Ask questions about the portfolios currently stored in your application.
+      </p>
+    </div>
+
+    <span className="admin-chatbot-status">
+      <span></span>
+      Online
+    </span>
+  </div>
+
+  <div className="admin-chatbot-example-buttons">
+    <button
+      type="button"
+      onClick={() =>
+        setAdminQuestion("How many portfolios use React?")
+      }
+    >
+      React portfolios
+    </button>
+
+    <button
+      type="button"
+      onClick={() =>
+        setAdminQuestion("Which template is used most often?")
+      }
+    >
+      Most used template
+    </button>
+
+    <button
+      type="button"
+      onClick={() =>
+        setAdminQuestion("Summarize all portfolios in a short list.")
+      }
+    >
+      Summarize portfolios
+    </button>
+  </div>
+
+  <div className="admin-chatbot-input-row">
+    <textarea
+      rows="3"
+      value={adminQuestion}
+      onChange={(e) => setAdminQuestion(e.target.value)}
+      placeholder="Example: Which portfolios mention AWS?"
+    />
+
+    <button
+      type="button"
+      className="admin-chatbot-send"
+      onClick={askAdminPortfolioAssistant}
+      disabled={adminChatLoading || !adminQuestion.trim()}
+    >
+      {adminChatLoading ? "Thinking..." : "Ask AI"}
+    </button>
+  </div>
+
+  {adminChatError && (
+    <p className="admin-chatbot-error">{adminChatError}</p>
+  )}
+
+  {adminAnswer && (
+    <div className="admin-chatbot-answer">
+      <p className="admin-chatbot-answer-label">AI ANSWER</p>
+      <p>{adminAnswer}</p>
+    </div>
+  )}
+</section>
 
       <section className="admin-stats">
         <article className="admin-stat-card">
