@@ -162,6 +162,46 @@ function AdminDashboard() {
       alert(err.message || "Could not delete the user.");
     }
   };
+  const toggleChatbotAccess = async (userId, currentStatus) => {
+  const nextStatus = !currentStatus;
+
+  const confirmed = window.confirm(
+    nextStatus
+      ? "Enable chatbot access for this user?"
+      : "Disable chatbot access for this user?"
+  );
+
+  if (!confirmed) return;
+
+  try {
+    const response = await fetch(
+      `${API_URL}/users/chatbot-access`,
+      {
+        method: "PATCH",
+        headers: getHeaders(),
+        body: JSON.stringify({
+          userId,
+          chatbotEnabled: nextStatus,
+        }),
+      }
+    );
+
+    const data = await readApiResponse(response);
+
+    setUsers((currentUsers) =>
+      currentUsers.map((user) =>
+        user.userId === userId
+          ? { ...user, chatbotEnabled: data.chatbotEnabled }
+          : user
+      )
+    );
+
+    alert(data.message);
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "Could not update chatbot access.");
+  }
+};
 
   return (
     <main className="admin-page">
@@ -216,6 +256,7 @@ function AdminDashboard() {
                   <th>Name</th>
                   <th>Email</th>
                   <th>User ID</th>
+                  <th>Chatbot Access</th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -226,14 +267,30 @@ function AdminDashboard() {
                     <td>{user.name || "—"}</td>
                     <td>{user.email || "—"}</td>
                     <td className="admin-id">{user.userId}</td>
-                    <td>
-                      <button
-                        className="admin-delete-button"
-                        onClick={() => deleteUser(user.userId)}
-                      >
-                        Delete
-                      </button>
-                    </td>
+
+<td>
+  <button
+    className={
+      user.chatbotEnabled
+        ? "admin-chatbot-disable-button"
+        : "admin-chatbot-enable-button"
+    }
+    onClick={() =>
+      toggleChatbotAccess(user.userId, Boolean(user.chatbotEnabled))
+    }
+  >
+    {user.chatbotEnabled ? "Disable Chatbot" : "Enable Chatbot"}
+  </button>
+</td>
+
+<td>
+  <button
+    className="admin-delete-button"
+    onClick={() => deleteUser(user.userId)}
+  >
+    Delete
+  </button>
+</td>
                   </tr>
                 ))}
               </tbody>
