@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TemplateSelector from "../components/TemplateSelector";
 import BackButton from "../components/BackButton";
+import { useEffect, } from "react";
 
 function CreatePortfolio() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -11,6 +12,8 @@ function CreatePortfolio() {
   const [tools, setTools] = useState("");
   const [template, setTemplate] = useState("classic");
   const [image, setImage] = useState(null);
+  const [chatbotEnabled, setChatbotEnabled] = useState(false);
+const [chatbotAccessLoading, setChatbotAccessLoading] = useState(true);
 
   const createPortfolio = async () => {
     if (!image) {
@@ -71,6 +74,33 @@ function CreatePortfolio() {
       alert("Could not create portfolio. Please try again.");
     }
   };
+  useEffect(() => {
+  async function loadChatbotAccess() {
+    try {
+      const response = await fetch(
+        "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/settings",
+        {
+          headers: {
+            Authorization: localStorage.getItem("id_token"),
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setChatbotEnabled(data.chatbotEnabled === true);
+      }
+    } catch (error) {
+      console.error("Could not load chatbot access:", error);
+      setChatbotEnabled(false);
+    } finally {
+      setChatbotAccessLoading(false);
+    }
+  }
+
+  loadChatbotAccess();
+}, []);
 
   return (
     <main className="create-page">
@@ -121,6 +151,57 @@ function CreatePortfolio() {
               rows="6"
             />
           </label>
+          {chatbotAccessLoading ? (
+  <div className="chatbot-access-loading">
+    Checking AI assistant access...
+  </div>
+) : chatbotEnabled ? (
+  <section className="chatbot-access-granted-card">
+    <div className="chatbot-access-granted-icon">✨</div>
+
+    <div>
+      <h3>AI Portfolio Assistant</h3>
+      <p>
+        Your chatbot access is enabled. The AI assistant will be available
+        here soon.
+      </p>
+    </div>
+  </section>
+) : (
+  <section className="chatbot-locked-card">
+    <div className="chatbot-blur-content">
+      <div className="chatbot-demo-header">
+        <span>✨ Portfolio Assistant</span>
+        <span className="chatbot-online-dot"></span>
+      </div>
+
+      <div className="chatbot-demo-message assistant">
+        Hi! I can help improve your project description.
+      </div>
+
+      <div className="chatbot-demo-message user">
+        Make my portfolio description professional.
+      </div>
+
+      <div className="chatbot-demo-message assistant">
+        I can help you write a clear and professional description.
+      </div>
+
+      <div className="chatbot-demo-input">
+        Ask about your portfolio...
+      </div>
+    </div>
+
+    <div className="chatbot-lock-overlay">
+      <div className="chatbot-lock-icon">🔒</div>
+      <h3>AI Assistant is locked</h3>
+      <p>
+        You do not have access to the portfolio chatbot.
+        Please contact the administrator.
+      </p>
+    </div>
+  </section>
+)}
 
           <div className="form-grid">
             <label className="form-field">
