@@ -231,8 +231,7 @@ const askPortfolioAssistant = async () => {
         <p className="chatbot-label">✨ AI PORTFOLIO ASSISTANT</p>
         <h3>Improve your project details</h3>
         <p>
-          Ask for help writing a title, description, tools list, or technology
-          summary.
+          Ask for help writing a strong project title or professional description.
         </p>
       </div>
 
@@ -265,16 +264,6 @@ const askPortfolioAssistant = async () => {
         Suggest a title
       </button>
 
-      <button
-        type="button"
-        onClick={() =>
-          setChatMessage(
-            "Suggest a professional tools and technologies list for my project."
-          )
-        }
-      >
-        Suggest tools
-      </button>
     </div>
 
     <div className="portfolio-chatbot-input-row">

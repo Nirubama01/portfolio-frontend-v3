@@ -1568,3 +1568,204 @@ code {
   font-size: 0.88rem;
   line-height: 1.55;
 }
+/* ================================
+   AI PORTFOLIO CHATBOT
+================================ */
+
+.portfolio-chatbot-card {
+  margin-top: 22px;
+  padding: 24px;
+  border: 1px solid rgba(236, 72, 153, 0.22);
+  border-radius: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 240, 247, 0.95),
+    rgba(255, 255, 255, 0.98)
+  );
+  box-shadow: 0 14px 35px rgba(190, 24, 93, 0.1);
+}
+
+.portfolio-chatbot-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.chatbot-label {
+  margin: 0 0 6px;
+  color: #db2777;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+.portfolio-chatbot-header h3 {
+  margin: 0;
+  color: #831843;
+  font-size: 1.18rem;
+}
+
+.portfolio-chatbot-header p:not(.chatbot-label) {
+  margin: 7px 0 0;
+  color: #9d174d;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.chatbot-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex-shrink: 0;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: #ffffff;
+  color: #be185d;
+  font-size: 0.78rem;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(190, 24, 93, 0.1);
+}
+
+.chatbot-status span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+}
+
+.portfolio-chatbot-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.portfolio-chatbot-suggestions button {
+  border: 1px solid #f9a8d4;
+  border-radius: 999px;
+  padding: 9px 14px;
+  background: #ffffff;
+  color: #be185d;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.portfolio-chatbot-suggestions button:hover {
+  transform: translateY(-2px);
+  background: #fdf2f8;
+  border-color: #ec4899;
+}
+
+.portfolio-chatbot-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.portfolio-chatbot-input-row textarea {
+  width: 100%;
+  min-height: 84px;
+  resize: vertical;
+  padding: 13px 14px;
+  border: 1px solid #f9a8d4;
+  border-radius: 14px;
+  outline: none;
+  background: #ffffff;
+  color: #831843;
+  font: inherit;
+  line-height: 1.5;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.portfolio-chatbot-input-row textarea:focus {
+  border-color: #ec4899;
+  box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.12);
+}
+
+.portfolio-chatbot-send {
+  min-width: 100px;
+  border: none;
+  border-radius: 14px;
+  padding: 0 18px;
+  background: linear-gradient(135deg, #ec4899, #be185d);
+  color: #ffffff;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.portfolio-chatbot-send:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.portfolio-chatbot-send:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.portfolio-chatbot-error {
+  margin: 12px 0 0;
+  color: #be123c;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+
+.portfolio-chatbot-reply {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #fbcfe8;
+  border-radius: 15px;
+  background: #ffffff;
+}
+
+.portfolio-chatbot-reply-label {
+  margin: 0 0 8px;
+  color: #db2777;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.portfolio-chatbot-reply > p:not(.portfolio-chatbot-reply-label) {
+  margin: 0;
+  color: #831843;
+  white-space: pre-wrap;
+  line-height: 1.7;
+}
+
+.portfolio-chatbot-use-button {
+  margin-top: 14px;
+  border: 1px solid #ec4899;
+  border-radius: 10px;
+  padding: 9px 13px;
+  background: #fdf2f8;
+  color: #be185d;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.portfolio-chatbot-use-button:hover {
+  background: #fce7f3;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 620px) {
+  .portfolio-chatbot-header,
+  .portfolio-chatbot-input-row {
+    flex-direction: column;
+  }
+
+  .portfolio-chatbot-send {
+    min-height: 46px;
+    width: 100%;
+  }
+
+  .chatbot-status {
+    align-self: flex-start;
+  }
+}
