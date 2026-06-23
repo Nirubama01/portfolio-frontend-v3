@@ -14,6 +14,7 @@ function CreatePortfolio() {
   const [image, setImage] = useState(null);
   const [chatbotEnabled, setChatbotEnabled] = useState(false);
 const [chatbotAccessLoading, setChatbotAccessLoading] = useState(true);
+const [isAdmin, setIsAdmin] = useState(false);
 
   const createPortfolio = async () => {
     if (!image) {
@@ -74,8 +75,35 @@ const [chatbotAccessLoading, setChatbotAccessLoading] = useState(true);
       alert("Could not create portfolio. Please try again.");
     }
   };
+  function getIsAdminFromToken() {
+  try {
+    const token = localStorage.getItem("id_token");
+
+    if (!token) return false;
+
+    const payload = JSON.parse(
+      atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))
+    );
+
+    const groups = payload["cognito:groups"] || [];
+
+    if (Array.isArray(groups)) {
+      return groups.includes("Admin");
+    }
+
+    return String(groups)
+      .split(",")
+      .map((group) => group.trim())
+      .includes("Admin");
+  } catch (error) {
+    console.error("Could not read admin group:", error);
+    return false;
+  }
+}
   useEffect(() => {
   async function loadChatbotAccess() {
+    const adminUser = getIsAdminFromToken();
+setIsAdmin(adminUser);
     try {
       const response = await fetch(
         "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/settings",
@@ -155,7 +183,7 @@ const [chatbotAccessLoading, setChatbotAccessLoading] = useState(true);
   <div className="chatbot-access-loading">
     Checking AI assistant access...
   </div>
-) : chatbotEnabled ? (
+) : chatbotEnabled || isAdmin ? (
   <section className="chatbot-access-granted-card">
     <div className="chatbot-access-granted-icon">✨</div>
 
