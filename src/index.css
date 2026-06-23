@@ -1889,29 +1889,6 @@ code {
   border-radius: 50%;
   background: #22c55e;
 }
-
-.admin-chatbot-example-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 18px 0 14px;
-}
-
-.admin-chatbot-example-buttons button {
-  border: 1px solid #f9a8d4;
-  border-radius: 999px;
-  padding: 9px 13px;
-  background: white;
-  color: #be185d;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.admin-chatbot-example-buttons button:hover {
-  background: #fdf2f8;
-  border-color: #ec4899;
-}
-
 .admin-chatbot-input-row {
   display: flex;
   gap: 12px;

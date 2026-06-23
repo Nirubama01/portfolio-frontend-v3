@@ -227,12 +227,33 @@ const askAdminPortfolioAssistant = async () => {
       template: portfolio.template || "classic",
       createdAt: portfolio.createdAt || "",
     }));
+const message = `
+You are the AI assistant for an admin portfolio dashboard.
 
-    const message = `
-You are an admin assistant for a portfolio management application.
+Answer any question the admin asks about the portfolios using only the portfolio data below.
 
-Answer only using the portfolio data below.
-If the answer is not available in the data, clearly say that.
+You can:
+- explain a portfolio
+- compare portfolios
+- identify project details
+- answer questions about title, description, language, tools, template, and creation date
+- recommend which portfolio appears strongest or best
+
+When the admin asks which portfolio is best, evaluate only from the available data.
+Use clear reasons such as:
+- clarity and completeness of the description
+- relevant technologies and tools
+- project title quality
+- detail level
+- overall professionalism
+
+Do not claim the recommendation is an objective fact.
+Say it is your recommendation based on the portfolio information available.
+
+If the answer is not available in the portfolio data, say:
+"I could not find that information in the available portfolios."
+
+Keep answers clear, accurate, friendly, and easy to understand.
 
 Portfolio data:
 ${JSON.stringify(portfolioSummary)}
@@ -240,7 +261,6 @@ ${JSON.stringify(portfolioSummary)}
 Admin question:
 ${question}
 `;
-
     const response = await fetch(`${API_URL}/chatbot`, {
       method: "POST",
       headers: getHeaders(),
@@ -259,6 +279,7 @@ ${question}
     setAdminChatLoading(false);
   }
 };
+
 
   return (
     <main className="admin-page">
@@ -281,9 +302,9 @@ ${question}
   <div className="admin-chatbot-heading">
     <div>
       <p className="admin-eyebrow">AI ADMIN ASSISTANT</p>
-      <h2>Ask about portfolios</h2>
+      <h2>Portfolio Assistant</h2>
       <p>
-        Ask questions about the portfolios currently stored in your application.
+        Ask any question about the portfolios created in this application.
       </p>
     </div>
 
@@ -293,41 +314,12 @@ ${question}
     </span>
   </div>
 
-  <div className="admin-chatbot-example-buttons">
-    <button
-      type="button"
-      onClick={() =>
-        setAdminQuestion("How many portfolios use React?")
-      }
-    >
-      React portfolios
-    </button>
-
-    <button
-      type="button"
-      onClick={() =>
-        setAdminQuestion("Which template is used most often?")
-      }
-    >
-      Most used template
-    </button>
-
-    <button
-      type="button"
-      onClick={() =>
-        setAdminQuestion("Summarize all portfolios in a short list.")
-      }
-    >
-      Summarize portfolios
-    </button>
-  </div>
-
   <div className="admin-chatbot-input-row">
     <textarea
       rows="3"
       value={adminQuestion}
       onChange={(e) => setAdminQuestion(e.target.value)}
-      placeholder="Example: Which portfolios mention AWS?"
+      placeholder="Ask anything about a portfolio..."
     />
 
     <button
