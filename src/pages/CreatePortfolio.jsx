@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import TemplateSelector from "../components/TemplateSelector";
 import BackButton from "../components/BackButton";
 
@@ -14,10 +14,10 @@ function CreatePortfolio() {
   const [chatbotEnabled, setChatbotEnabled] = useState(false);
 const [chatbotAccessLoading, setChatbotAccessLoading] = useState(true);
 const [isAdmin, setIsAdmin] = useState(false);
-const [chatMessage, setChatMessage] = useState("");
-const [chatReply, setChatReply] = useState("");
-const [chatLoading, setChatLoading] = useState(false);
-const [chatError, setChatError] = useState("");
+const [descriptionSuggestion, setDescriptionSuggestion] = useState("");
+const [descriptionChecking, setDescriptionChecking] = useState(false);
+const [descriptionError, setDescriptionError] = useState("");
+const descriptionTimerRef = useRef(null);
 
   const createPortfolio = async () => {
     if (!image) {
@@ -133,17 +133,17 @@ setIsAdmin(adminUser);
   loadChatbotAccess();
 }, []);
 
-const askPortfolioAssistant = async () => {
-  const message = chatMessage.trim();
+const checkDescriptionWithAI = async (text) => {
+  const cleanText = text.trim();
 
-  if (!message) {
+  if (cleanText.length < 15) {
+    setDescriptionSuggestion("");
     return;
   }
 
   try {
-    setChatLoading(true);
-    setChatError("");
-    setChatReply("");
+    setDescriptionChecking(true);
+    setDescriptionError("");
 
     const response = await fetch(
       "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio/chatbot",
@@ -153,22 +153,33 @@ const askPortfolioAssistant = async () => {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("id_token"),
         },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({
+          message:
+            "Correct only grammar, spelling, punctuation, and clarity in this portfolio description. " +
+            "Keep the same meaning. Return only the corrected description, without explanation:\n\n" +
+            cleanText,
+        }),
       }
     );
 
     const data = await response.json();
 
     if (!response.ok) {
-      throw new Error(data.message || "Could not get an AI response.");
+      throw new Error(data.message || "Could not check the description.");
     }
 
-    setChatReply(data.reply || "No response received.");
+    const correctedText = (data.reply || "").trim();
+
+    if (correctedText && correctedText !== cleanText) {
+      setDescriptionSuggestion(correctedText);
+    } else {
+      setDescriptionSuggestion("");
+    }
   } catch (error) {
-    console.error("Chatbot error:", error);
-    setChatError(error.message || "Could not contact the AI assistant.");
+    console.error("Description AI check error:", error);
+    setDescriptionError("AI correction is temporarily unavailable.");
   } finally {
-    setChatLoading(false);
+    setDescriptionChecking(false);
   }
 };
   return (
@@ -212,132 +223,97 @@ const askPortfolioAssistant = async () => {
           </div>
 
           <label className="form-field">
-            <span>Description</span>
-            <textarea
-              placeholder="Tell visitors what this project does..."
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows="6"
-            />
-          </label>
-          {chatbotAccessLoading ? (
-  <div className="chatbot-access-loading">
-    Checking AI assistant access...
-  </div>
-) : chatbotEnabled || isAdmin ? (
-  <section className="portfolio-chatbot-card">
-    <div className="portfolio-chatbot-header">
+  <span>Description</span>
+
+  <textarea
+    placeholder="Tell visitors what this project does..."
+    value={description}
+    onChange={(e) => {
+      const newDescription = e.target.value;
+
+      setDescription(newDescription);
+      setDescriptionSuggestion("");
+      setDescriptionError("");
+
+      if (!chatbotEnabled && !isAdmin) {
+        return;
+      }
+
+      clearTimeout(descriptionTimerRef.current);
+
+      descriptionTimerRef.current = setTimeout(() => {
+        checkDescriptionWithAI(newDescription);
+      }, 1500);
+    }}
+    rows="6"
+  />
+
+  {(chatbotEnabled || isAdmin) && (
+    <small className="description-ai-status">
+      {descriptionChecking
+        ? "✨ AI is checking your description..."
+        : "✨ AI checks grammar and clarity while you type."}
+    </small>
+  )}
+</label>
+
+{descriptionError && (
+  <p className="description-ai-error">{descriptionError}</p>
+)}
+
+{descriptionSuggestion && (
+  <section className="description-ai-suggestion">
+    <div className="description-ai-suggestion-heading">
       <div>
-        <p className="chatbot-label">✨ AI PORTFOLIO ASSISTANT</p>
-        <h3>Improve your project details</h3>
-        <p>
-          Ask for help writing a strong project title or professional description.
-        </p>
+        <p>✨ AI CORRECTION</p>
+        <h3>Suggested improved description</h3>
       </div>
 
-      <span className="chatbot-status">
-        <span></span>
-        Online
-      </span>
-    </div>
-
-    <div className="portfolio-chatbot-suggestions">
       <button
         type="button"
-        onClick={() =>
-          setChatMessage(
-            "Write a professional portfolio description using my project details."
-          )
-        }
+        onClick={() => {
+          setDescriptionSuggestion("");
+        }}
       >
-        Improve my description
-      </button>
-
-      <button
-        type="button"
-        onClick={() =>
-          setChatMessage(
-            "Suggest a strong professional title for my portfolio project."
-          )
-        }
-      >
-        Suggest a title
-      </button>
-
-    </div>
-
-    <div className="portfolio-chatbot-input-row">
-      <textarea
-        rows="3"
-        value={chatMessage}
-        onChange={(e) => setChatMessage(e.target.value)}
-        placeholder="Example: Make my description more professional..."
-      />
-
-      <button
-        type="button"
-        className="portfolio-chatbot-send"
-        onClick={askPortfolioAssistant}
-        disabled={chatLoading || !chatMessage.trim()}
-      >
-        {chatLoading ? "Thinking..." : "Ask AI"}
+        ×
       </button>
     </div>
 
-    {chatError && (
-      <p className="portfolio-chatbot-error">{chatError}</p>
-    )}
+    <p>{descriptionSuggestion}</p>
 
-    {chatReply && (
-      <div className="portfolio-chatbot-reply">
-        <p className="portfolio-chatbot-reply-label">AI SUGGESTION</p>
-        <p>{chatReply}</p>
-
-        <button
-          type="button"
-          className="portfolio-chatbot-use-button"
-          onClick={() => {
-            setDescription(chatReply);
-            setChatReply("");
-          }}
-        >
-          Use this as description
-        </button>
-      </div>
-    )}
+    <button
+      type="button"
+      className="description-ai-use-button"
+      onClick={() => {
+        setDescription(descriptionSuggestion);
+        setDescriptionSuggestion("");
+      }}
+    >
+      Use corrected description
+    </button>
   </section>
-) : (
+)}
+          {!chatbotAccessLoading && !chatbotEnabled && !isAdmin && (
   <section className="chatbot-locked-card">
     <div className="chatbot-blur-content">
       <div className="chatbot-demo-header">
-        <span>✨ Portfolio Assistant</span>
+        <span>✨ AI Description Assistant</span>
         <span className="chatbot-online-dot"></span>
       </div>
 
       <div className="chatbot-demo-message assistant">
-        Hi! I can help improve your project description.
-      </div>
-
-      <div className="chatbot-demo-message user">
-        Make my portfolio description professional.
-      </div>
-
-      <div className="chatbot-demo-message assistant">
-        I can help you write a clear and professional description.
+        I will check spelling, grammar, and clarity as you type.
       </div>
 
       <div className="chatbot-demo-input">
-        Ask about your portfolio...
+        Type your project description...
       </div>
     </div>
 
     <div className="chatbot-lock-overlay">
       <div className="chatbot-lock-icon">🔒</div>
       <h3>AI Assistant is locked</h3>
-      <p>
-        You do not have access to the portfolio chatbot.
-        Please contact the administrator.
-      </p>
+      <p>Please contact the administrator for access.</p>
     </div>
   </section>
 )}

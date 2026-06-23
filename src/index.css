@@ -1769,3 +1769,76 @@ code {
     align-self: flex-start;
   }
 }
+/* AI description correction */
+
+.description-ai-status {
+  display: block;
+  margin-top: 8px;
+  color: #be185d;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.description-ai-error {
+  margin: 10px 0 0;
+  color: #be123c;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.description-ai-suggestion {
+  margin: 14px 0 22px;
+  padding: 18px;
+  border: 1px solid #f9a8d4;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff1f7, #ffffff);
+  box-shadow: 0 10px 25px rgba(190, 24, 93, 0.08);
+}
+
+.description-ai-suggestion-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.description-ai-suggestion-heading p {
+  margin: 0 0 4px;
+  color: #db2777;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.description-ai-suggestion-heading h3 {
+  margin: 0;
+  color: #831843;
+  font-size: 1rem;
+}
+
+.description-ai-suggestion-heading button {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 50%;
+  background: #fce7f3;
+  color: #be185d;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.description-ai-suggestion > p {
+  margin: 14px 0;
+  color: #831843;
+  line-height: 1.7;
+  white-space: pre-wrap;
+}
+
+.description-ai-use-button {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #ec4899, #be185d);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+}
