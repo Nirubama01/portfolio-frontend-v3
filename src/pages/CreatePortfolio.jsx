@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TemplateSelector from "../components/TemplateSelector";
 import BackButton from "../components/BackButton";
-import { useEffect, } from "react";
 
 function CreatePortfolio() {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -15,6 +14,10 @@ function CreatePortfolio() {
   const [chatbotEnabled, setChatbotEnabled] = useState(false);
 const [chatbotAccessLoading, setChatbotAccessLoading] = useState(true);
 const [isAdmin, setIsAdmin] = useState(false);
+const [chatMessage, setChatMessage] = useState("");
+const [chatReply, setChatReply] = useState("");
+const [chatLoading, setChatLoading] = useState(false);
+const [chatError, setChatError] = useState("");
 
   const createPortfolio = async () => {
     if (!image) {
@@ -130,6 +133,44 @@ setIsAdmin(adminUser);
   loadChatbotAccess();
 }, []);
 
+const askPortfolioAssistant = async () => {
+  const message = chatMessage.trim();
+
+  if (!message) {
+    return;
+  }
+
+  try {
+    setChatLoading(true);
+    setChatError("");
+    setChatReply("");
+
+    const response = await fetch(
+      "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio/chatbot",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("id_token"),
+        },
+        body: JSON.stringify({ message }),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Could not get an AI response.");
+    }
+
+    setChatReply(data.reply || "No response received.");
+  } catch (error) {
+    console.error("Chatbot error:", error);
+    setChatError(error.message || "Could not contact the AI assistant.");
+  } finally {
+    setChatLoading(false);
+  }
+};
   return (
     <main className="create-page">
       <BackButton />
@@ -184,16 +225,97 @@ setIsAdmin(adminUser);
     Checking AI assistant access...
   </div>
 ) : chatbotEnabled || isAdmin ? (
-  <section className="chatbot-access-granted-card">
-    <div className="chatbot-access-granted-icon">✨</div>
+  <section className="portfolio-chatbot-card">
+    <div className="portfolio-chatbot-header">
+      <div>
+        <p className="chatbot-label">✨ AI PORTFOLIO ASSISTANT</p>
+        <h3>Improve your project details</h3>
+        <p>
+          Ask for help writing a title, description, tools list, or technology
+          summary.
+        </p>
+      </div>
 
-    <div>
-      <h3>AI Portfolio Assistant</h3>
-      <p>
-        Your chatbot access is enabled. The AI assistant will be available
-        here soon.
-      </p>
+      <span className="chatbot-status">
+        <span></span>
+        Online
+      </span>
     </div>
+
+    <div className="portfolio-chatbot-suggestions">
+      <button
+        type="button"
+        onClick={() =>
+          setChatMessage(
+            "Write a professional portfolio description using my project details."
+          )
+        }
+      >
+        Improve my description
+      </button>
+
+      <button
+        type="button"
+        onClick={() =>
+          setChatMessage(
+            "Suggest a strong professional title for my portfolio project."
+          )
+        }
+      >
+        Suggest a title
+      </button>
+
+      <button
+        type="button"
+        onClick={() =>
+          setChatMessage(
+            "Suggest a professional tools and technologies list for my project."
+          )
+        }
+      >
+        Suggest tools
+      </button>
+    </div>
+
+    <div className="portfolio-chatbot-input-row">
+      <textarea
+        rows="3"
+        value={chatMessage}
+        onChange={(e) => setChatMessage(e.target.value)}
+        placeholder="Example: Make my description more professional..."
+      />
+
+      <button
+        type="button"
+        className="portfolio-chatbot-send"
+        onClick={askPortfolioAssistant}
+        disabled={chatLoading || !chatMessage.trim()}
+      >
+        {chatLoading ? "Thinking..." : "Ask AI"}
+      </button>
+    </div>
+
+    {chatError && (
+      <p className="portfolio-chatbot-error">{chatError}</p>
+    )}
+
+    {chatReply && (
+      <div className="portfolio-chatbot-reply">
+        <p className="portfolio-chatbot-reply-label">AI SUGGESTION</p>
+        <p>{chatReply}</p>
+
+        <button
+          type="button"
+          className="portfolio-chatbot-use-button"
+          onClick={() => {
+            setDescription(chatReply);
+            setChatReply("");
+          }}
+        >
+          Use this as description
+        </button>
+      </div>
+    )}
   </section>
 ) : (
   <section className="chatbot-locked-card">
