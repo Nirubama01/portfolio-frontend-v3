@@ -17,6 +17,7 @@ function AdminDashboard() {
 const [adminAnswer, setAdminAnswer] = useState("");
 const [adminChatLoading, setAdminChatLoading] = useState(false);
 const [adminChatError, setAdminChatError] = useState("");
+const [selectedModel, setSelectedModel] = useState("auto");
 
   function getHeaders() {
     const idToken = localStorage.getItem("id_token");
@@ -264,7 +265,10 @@ ${question}
     const response = await fetch(`${API_URL}/chatbot`, {
       method: "POST",
       headers: getHeaders(),
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({
+  message,
+  model: selectedModel,
+}),
     });
 
     const data = await readApiResponse(response);
@@ -313,6 +317,18 @@ ${question}
       Online
     </span>
   </div>
+  <div className="admin-model-picker">
+  <label htmlFor="admin-ai-model">Choose AI model</label>
+
+  <select
+    id="admin-ai-model"
+    value={selectedModel}
+    onChange={(e) => setSelectedModel(e.target.value)}
+    disabled={adminChatLoading}
+  >
+    <option value="auto">Auto — Free AI model</option>
+  </select>
+</div>
 
   <div className="admin-chatbot-input-row">
     <textarea
