@@ -318,21 +318,38 @@ ${question}
     </span>
   </div>
   <div className="admin-model-picker">
-  <label htmlFor="admin-ai-model">Choose AI model</label>
+  <div className="admin-model-picker-top">
+    <div>
+      <span className="admin-model-picker-label">AI MODEL</span>
+      <p>Choose the AI provider for this answer</p>
+    </div>
 
-  <select
-    id="admin-ai-model"
-    value={selectedProvider}
-    onChange={(e) => setSelectedProvider(e.target.value)}
-    disabled={adminChatLoading}
-  >
-    <option value="groq">Llama 3.3 70B — Groq</option>
-    <option value="gemini">Gemini 2.0 Flash — Google</option>
-    <option value="openrouter">OpenRouter — Auto model</option>
-    <option value="mistral">Mistral Small — Mistral AI</option>
-  </select>
+    <span className="admin-model-free-badge">FREE TIER</span>
+  </div>
+
+  <div className="admin-model-select-wrap">
+    <span className="admin-model-select-icon">✦</span>
+
+    <select
+      id="admin-ai-model"
+      value={selectedProvider}
+      onChange={(e) => setSelectedProvider(e.target.value)}
+      disabled={adminChatLoading}
+      aria-label="Choose AI model"
+    >
+      <option value="groq">Llama 3.3 70B · Groq</option>
+      <option value="gemini">Gemini 2.0 Flash · Google</option>
+      <option value="openrouter">OpenRouter Free · Auto</option>
+      <option value="mistral">Mistral Small · Mistral AI</option>
+    </select>
+
+    <span className="admin-model-select-arrow">⌄</span>
+  </div>
+
+  <p className="admin-model-note">
+    Your selected provider will generate the portfolio answer.
+  </p>
 </div>
-
   <div className="admin-chatbot-input-row">
     <textarea
       rows="3"
