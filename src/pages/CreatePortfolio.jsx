@@ -235,7 +235,7 @@ const checkDescriptionWithAI = async (text) => {
       setDescriptionSuggestion("");
       setDescriptionError("");
 
-      if (!chatbotEnabled && !isAdmin) {
+      if (!chatbotEnabled){
         return;
       }
 
@@ -248,7 +248,7 @@ const checkDescriptionWithAI = async (text) => {
     rows="6"
   />
 
-  {chatbotEnabled || !isAdmin  && (
+  {chatbotEnabled && (
     <small className="description-ai-status">
       {descriptionChecking
         ? "✨ AI is checking your description..."
