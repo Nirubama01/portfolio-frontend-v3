@@ -3,11 +3,14 @@ body {
   padding: 20px;
 }
 .share-page-footer {
+  width: 100%;
   display: flex;
-  justify-content: flex-end;
-   margin-top: 70px;
+  justify-content: flex-end !important;
+  align-items: center;
+   margin-top: 55px;
   margin-bottom: 24px;
   padding-right: 20px;
+  box-sizing: border-box;
 }
 
 
