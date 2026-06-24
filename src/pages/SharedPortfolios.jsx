@@ -1,6 +1,15 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+import ClassicTemplate from "../templates/ClassicTemplate";
+import DarkTemplate from "../templates/DarkTemplate";
+import DeveloperTemplate from "../templates/DeveloperTemplate";
+import ModernTemplate from "../templates/ModernTemplate";
+import NeonTemplate from "../templates/NeonTemplate";
+import ResumeTemplate from "../templates/ResumeTemplate";
+import ShowcaseTemplate from "../templates/ShowcaseTemplate";
+import TerminalTemplate from "../templates/TerminalTemplate";
+
 const API_URL =
   "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio";
 
@@ -24,13 +33,19 @@ function SharedPortfolios() {
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.message || "Could not load shared portfolios.");
+          throw new Error(
+            data.message || "Could not load shared portfolios."
+          );
         }
 
-        setPortfolios(Array.isArray(data.portfolios) ? data.portfolios : []);
+        setPortfolios(
+          Array.isArray(data.portfolios) ? data.portfolios : []
+        );
       } catch (err) {
-        console.error("Could not load shared portfolios:", err);
-        setError(err.message || "Could not load shared portfolios.");
+        console.error("Shared portfolio error:", err);
+        setError(
+          err.message || "Could not load shared portfolios."
+        );
       } finally {
         setLoading(false);
       }
@@ -39,9 +54,40 @@ function SharedPortfolios() {
     loadSharedPortfolios();
   }, [shareId]);
 
+  function renderPortfolioTemplate(portfolio) {
+    const template = String(portfolio.template || "classic").toLowerCase();
+
+    switch (template) {
+      case "dark":
+        return <DarkTemplate portfolio={portfolio} />;
+
+      case "developer":
+        return <DeveloperTemplate portfolio={portfolio} />;
+
+      case "modern":
+        return <ModernTemplate portfolio={portfolio} />;
+
+      case "neon":
+        return <NeonTemplate portfolio={portfolio} />;
+
+      case "resume":
+        return <ResumeTemplate portfolio={portfolio} />;
+
+      case "showcase":
+        return <ShowcaseTemplate portfolio={portfolio} />;
+
+      case "terminal":
+        return <TerminalTemplate portfolio={portfolio} />;
+
+      case "classic":
+      default:
+        return <ClassicTemplate portfolio={portfolio} />;
+    }
+  }
+
   if (loading) {
     return (
-      <main className="portfolios-page">
+      <main style={{ padding: "30px" }}>
         <h1>Loading shared portfolios...</h1>
       </main>
     );
@@ -49,64 +95,27 @@ function SharedPortfolios() {
 
   if (error) {
     return (
-      <main className="portfolios-page">
+      <main style={{ padding: "30px" }}>
         <h1>Shared Portfolios</h1>
-        <p className="settings-message settings-error">{error}</p>
+        <p>{error}</p>
       </main>
     );
   }
 
   return (
-    <main className="portfolios-page">
-      <section className="portfolios-header">
-        <div>
-          <p className="admin-eyebrow">PUBLIC PORTFOLIOS</p>
-          <h1>Shared Portfolios</h1>
-          <p>View the portfolios shared by this user.</p>
-        </div>
-      </section>
+    <main style={{ padding: "20px" }}>
+      <h1 style={{ textAlign: "center" }}>Shared Portfolios</h1>
 
       {portfolios.length === 0 ? (
-        <p>No portfolios were found in this shared link.</p>
+        <p style={{ textAlign: "center" }}>
+          No portfolios are available in this shared link.
+        </p>
       ) : (
-        <section className="portfolio-list">
-          {portfolios.map((portfolio) => (
-            <article
-              className="portfolio-item"
-              key={portfolio.portfolioId}
-            >
-              {portfolio.images?.length > 0 && (
-                <img
-                  className="portfolio-item-image"
-                  src={portfolio.images[0]}
-                  alt={portfolio.title || "Portfolio"}
-                />
-              )}
-
-              <div className="portfolio-item-content">
-                <p className="portfolio-template-label">
-                  {portfolio.template || "classic"} TEMPLATE
-                </p>
-
-                <h2>{portfolio.title || "Untitled Portfolio"}</h2>
-
-                <p>{portfolio.description || "No description available."}</p>
-
-                <p>
-                  <strong>Language:</strong>{" "}
-                  {portfolio.language || "Not specified"}
-                </p>
-
-                <p>
-                  <strong>Tools:</strong>{" "}
-                  {Array.isArray(portfolio.tools)
-                    ? portfolio.tools.join(", ")
-                    : portfolio.tools || "Not specified"}
-                </p>
-              </div>
-            </article>
-          ))}
-        </section>
+        portfolios.map((portfolio) => (
+          <div key={portfolio.portfolioId}>
+            {renderPortfolioTemplate(portfolio)}
+          </div>
+        ))
       )}
     </main>
   );
