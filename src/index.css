@@ -2277,3 +2277,9 @@ code {
   font-weight: 800;
   line-height: 1;
 }
+.edit-tools-help {
+  display: block;
+  margin-top: 7px;
+  color: #7b6470;
+  font-size: 13px;
+}
