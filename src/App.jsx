@@ -79,6 +79,8 @@ function App() {
     </ProtectedRoute>
   }
 />
+
+<Route path="/share/:shareId" element={<SharedPortfolios />} />
       </Routes>
     </BrowserRouter>
   );

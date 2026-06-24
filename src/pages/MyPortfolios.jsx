@@ -9,6 +9,8 @@ import ShowcaseTemplate from "../templates/ShowcaseTemplate";
 import NeonTemplate from "../templates/NeonTemplate";
 import TerminalTemplate from "../templates/TerminalTemplate";
 import BackButton from "../components/BackButton";
+const API_URL =
+  "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio";
 
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
@@ -95,6 +97,40 @@ function MyPortfolios() {
         return <ClassicTemplate portfolio={portfolio} />;
     }
   };
+  const sharePortfolios = async () => {
+  try {
+    const userId = localStorage.getItem("userId");
+    const idToken = localStorage.getItem("id_token");
+
+    if (!userId || !idToken) {
+      throw new Error("You are not logged in.");
+    }
+
+    const response = await fetch(`${API_URL}/share`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: idToken,
+      },
+      body: JSON.stringify({ userId }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Could not create share link.");
+    }
+
+    const shareLink = `${window.location.origin}/share/${data.shareId}`;
+
+    await navigator.clipboard.writeText(shareLink);
+
+    alert(`Share link copied successfully:\n${shareLink}`);
+  } catch (error) {
+    console.error("Share error:", error);
+    alert(error.message || "Could not create the share link.");
+  }
+};
 
   return (
     
@@ -103,7 +139,15 @@ function MyPortfolios() {
       <section className="portfolios-header">
         <div>
           <p className="portfolios-eyebrow">YOUR WORK</p>
-          <h1>My Portfolios</h1>
+          <div className="portfolios-header">
+  <div>
+    <h1>My Portfolios</h1>
+  </div>
+
+  <button type="button" onClick={sharePortfolios}>
+    Share My Portfolios
+  </button>
+</div>
           <p>
             View your published projects, edit their details, or remove projects
             you no longer need.
