@@ -172,15 +172,6 @@ function MyPortfolios() {
 
           <div className="portfolios-title-row">
             <h1>My Portfolios</h1>
-
-            <button
-              type="button"
-              className="share-portfolios-button"
-              onClick={createShareLink}
-              disabled={shareLoading}
-            >
-              {shareLoading ? "Creating link..." : "Share My Portfolios"}
-            </button>
           </div>
 
           <p>
@@ -250,6 +241,19 @@ function MyPortfolios() {
           ))}
         </section>
       )}
+      <div className="share-page-footer">
+        <button
+          type="button"
+          className="share-portfolios-button"
+          onClick={createShareLink}
+          disabled={shareLoading}
+        >
+          <span className="share-button-icon" aria-hidden="true">
+            ↗
+          </span>
+          {shareLoading ? "Creating link..." : "Share My Portfolios"}
+        </button>
+      </div>
 
       {shareOpen && (
         <div
