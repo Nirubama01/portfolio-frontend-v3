@@ -4,9 +4,12 @@ body {
 }
 .share-page-footer {
   display: flex;
-  justify-content: center;
-  margin: 42px 0 18px;
+  justify-content: flex-end;
+   margin-top: 70px;
+  margin-bottom: 24px;
+  padding-right: 20px;
 }
+
 
 .share-portfolios-button {
   display: inline-flex;
