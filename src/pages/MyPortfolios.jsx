@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import ClassicTemplate from "../templates/ClassicTemplate";
 import DarkTemplate from "../templates/DarkTemplate";
 import ResumeTemplate from "../templates/ResumeTemplate";
@@ -8,27 +9,33 @@ import ModernTemplate from "../templates/ModernTemplate";
 import ShowcaseTemplate from "../templates/ShowcaseTemplate";
 import NeonTemplate from "../templates/NeonTemplate";
 import TerminalTemplate from "../templates/TerminalTemplate";
+
 import BackButton from "../components/BackButton";
+
 const API_URL =
   "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio";
 
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const [shareOpen, setShareOpen] = useState(false);
+  const [shareLink, setShareLink] = useState("");
+  const [shareLoading, setShareLoading] = useState(false);
+  const [copyMessage, setCopyMessage] = useState("");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
 
-    fetch(
-      `https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio?userId=${userId}`
-    )
+    fetch(`${API_URL}?userId=${userId}`)
       .then((response) => response.json())
       .then((data) => {
         setPortfolios(Array.isArray(data) ? data : []);
       })
       .catch((error) => {
-        console.error(error);
+        console.error("Could not load portfolios:", error);
         setPortfolios([]);
       })
       .finally(() => {
@@ -41,24 +48,20 @@ function MyPortfolios() {
       "Are you sure you want to delete this portfolio?"
     );
 
-    if (!confirmed) {
-      return;
-    }
+    if (!confirmed) return;
 
     try {
-      const response = await fetch(
-        "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/portfolio",
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId,
-            portfolioId,
-          }),
-        }
-      );
+      const response = await fetch(API_URL, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("id_token"),
+        },
+        body: JSON.stringify({
+          userId,
+          portfolioId,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Delete request failed");
@@ -72,82 +75,114 @@ function MyPortfolios() {
 
       alert("Portfolio deleted successfully.");
     } catch (error) {
-      console.error(error);
+      console.error("Delete error:", error);
       alert("Could not delete the portfolio. Please try again.");
     }
   };
 
   const renderTemplate = (portfolio) => {
-    switch (portfolio.template) {
+    switch (String(portfolio.template || "classic").toLowerCase()) {
       case "dark":
         return <DarkTemplate portfolio={portfolio} />;
+
       case "resume":
         return <ResumeTemplate portfolio={portfolio} />;
+
       case "developer":
         return <DeveloperTemplate portfolio={portfolio} />;
+
       case "modern":
         return <ModernTemplate portfolio={portfolio} />;
+
       case "showcase":
         return <ShowcaseTemplate portfolio={portfolio} />;
+
       case "neon":
         return <NeonTemplate portfolio={portfolio} />;
+
       case "terminal":
         return <TerminalTemplate portfolio={portfolio} />;
+
+      case "classic":
       default:
         return <ClassicTemplate portfolio={portfolio} />;
     }
   };
-  const sharePortfolios = async () => {
-  try {
-    const userId = localStorage.getItem("userId");
-    const idToken = localStorage.getItem("id_token");
 
-    if (!userId || !idToken) {
-      throw new Error("You are not logged in.");
+  const createShareLink = async () => {
+    try {
+      setShareLoading(true);
+      setCopyMessage("");
+
+      const userId = localStorage.getItem("userId");
+      const idToken = localStorage.getItem("id_token");
+
+      if (!userId || !idToken) {
+        throw new Error("Please log in again.");
+      }
+
+      const response = await fetch(`${API_URL}/share`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: idToken,
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not create share link.");
+      }
+
+      const newShareLink = `${window.location.origin}/share/${data.shareId}`;
+
+      setShareLink(newShareLink);
+      setShareOpen(true);
+    } catch (error) {
+      console.error("Share error:", error);
+      alert(error.message || "Could not create the share link.");
+    } finally {
+      setShareLoading(false);
     }
+  };
 
-    const response = await fetch(`${API_URL}/share`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: idToken,
-      },
-      body: JSON.stringify({ userId }),
-    });
+  const copyShareLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareLink);
+      setCopyMessage("Copied!");
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.message || "Could not create share link.");
+      setTimeout(() => {
+        setCopyMessage("");
+      }, 2000);
+    } catch (error) {
+      console.error("Copy error:", error);
+      setCopyMessage("Copy failed. Select and copy the link manually.");
     }
-
-    const shareLink = `${window.location.origin}/share/${data.shareId}`;
-
-    await navigator.clipboard.writeText(shareLink);
-
-    alert(`Share link copied successfully:\n${shareLink}`);
-  } catch (error) {
-    console.error("Share error:", error);
-    alert(error.message || "Could not create the share link.");
-  }
-};
+  };
 
   return (
-    
     <main className="portfolios-page">
       <BackButton />
+
       <section className="portfolios-header">
         <div>
           <p className="portfolios-eyebrow">YOUR WORK</p>
-          <div className="portfolios-header">
-  <div>
-    <h1>My Portfolios</h1>
-  </div>
 
-  <button type="button" onClick={sharePortfolios}>
-    Share My Portfolios
-  </button>
-</div>
+          <div className="portfolios-title-row">
+            <h1>My Portfolios</h1>
+
+            <button
+              type="button"
+              className="share-portfolios-button"
+              onClick={createShareLink}
+              disabled={shareLoading}
+            >
+              {shareLoading ? "Creating link..." : "Share My Portfolios"}
+            </button>
+          </div>
+
           <p>
             View your published projects, edit their details, or remove projects
             you no longer need.
@@ -167,8 +202,11 @@ function MyPortfolios() {
       ) : portfolios.length === 0 ? (
         <section className="empty-portfolio-card">
           <div className="empty-portfolio-icon">+</div>
+
           <h2>No portfolios yet</h2>
+
           <p>Create your first project and it will appear here.</p>
+
           <button
             className="new-portfolio-button"
             onClick={() => navigate("/create-portfolio")}
@@ -179,7 +217,10 @@ function MyPortfolios() {
       ) : (
         <section className="portfolio-list">
           {portfolios.map((portfolio) => (
-            <article className="portfolio-item-card" key={portfolio.portfolioId}>
+            <article
+              className="portfolio-item-card"
+              key={portfolio.portfolioId}
+            >
               <div className="portfolio-template-preview">
                 {renderTemplate(portfolio)}
               </div>
@@ -208,6 +249,57 @@ function MyPortfolios() {
             </article>
           ))}
         </section>
+      )}
+
+      {shareOpen && (
+        <div
+          className="share-modal-backdrop"
+          onClick={() => setShareOpen(false)}
+        >
+          <section
+            className="share-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Share portfolios"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="share-modal-close"
+              onClick={() => setShareOpen(false)}
+              aria-label="Close share popup"
+            >
+              ×
+            </button>
+
+            <h2>Share your portfolios</h2>
+
+            <p className="share-modal-subtitle">
+              Copy this link and paste it anywhere you want.
+            </p>
+
+            <div className="share-link-box">
+              <input
+                value={shareLink}
+                readOnly
+                aria-label="Portfolio share link"
+                onClick={(event) => event.target.select()}
+              />
+
+              <button type="button" onClick={copyShareLink}>
+                Copy link
+              </button>
+            </div>
+
+            {copyMessage && (
+              <p className="share-copy-message">{copyMessage}</p>
+            )}
+
+            <p className="share-link-help">
+              Anyone with this link can view your portfolios.
+            </p>
+          </section>
+        </div>
       )}
     </main>
   );

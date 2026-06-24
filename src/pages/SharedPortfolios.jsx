@@ -104,7 +104,7 @@ function SharedPortfolios() {
 
   return (
     <main style={{ padding: "20px" }}>
-      <h1 style={{ textAlign: "center" }}>Shared Portfolios</h1>
+      <h1 style={{ textAlign: "center" }}>Portfolios</h1>
 
       {portfolios.length === 0 ? (
         <p style={{ textAlign: "center" }}>
