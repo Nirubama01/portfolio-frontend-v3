@@ -10,6 +10,7 @@ import EditPortfolio from "./pages/EditPortfolio";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import Settings from "./pages/Settings";
+import SharedPortfolios from "./pages/SharedPortfolios";
 
 function App() {
   useEffect(() => {
