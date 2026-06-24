@@ -17,7 +17,7 @@ function AdminDashboard() {
 const [adminAnswer, setAdminAnswer] = useState("");
 const [adminChatLoading, setAdminChatLoading] = useState(false);
 const [adminChatError, setAdminChatError] = useState("");
-const [selectedModel, setSelectedModel] = useState("auto");
+const [selectedProvider, setSelectedProvider] = useState("groq");
 
   function getHeaders() {
     const idToken = localStorage.getItem("id_token");
@@ -267,7 +267,7 @@ ${question}
       headers: getHeaders(),
       body: JSON.stringify({
   message,
-  model: selectedModel,
+  provider: selectedProvider,
 }),
     });
 
@@ -322,11 +322,13 @@ ${question}
 
   <select
     id="admin-ai-model"
-    value={selectedModel}
-    onChange={(e) => setSelectedModel(e.target.value)}
+    value={selectedProvider}
+    onChange={(e) => setSelectedProvider(e.target.value)}
     disabled={adminChatLoading}
   >
-    <option value="auto">Auto — Free AI model</option>
+    <option value="groq">Llama 3.3 70B — Groq</option>
+    <option value="gemini">Gemini 2.0 Flash — Google</option>
+    <option value="openrouter">OpenRouter — Auto model</option>
   </select>
 </div>
 
