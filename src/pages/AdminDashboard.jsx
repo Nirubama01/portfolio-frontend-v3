@@ -329,6 +329,7 @@ ${question}
     <option value="groq">Llama 3.3 70B — Groq</option>
     <option value="gemini">Gemini 2.0 Flash — Google</option>
     <option value="openrouter">OpenRouter — Auto model</option>
+    <option value="mistral">Mistral Small — Mistral AI</option>
   </select>
 </div>
 
