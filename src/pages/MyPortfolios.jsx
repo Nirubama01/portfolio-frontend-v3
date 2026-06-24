@@ -171,7 +171,7 @@ function MyPortfolios() {
           <p className="portfolios-eyebrow">YOUR WORK</p>
 
           <div className="portfolios-title-row">
-            <h1>My Portfolios</h1>
+            <h1> Portfolios</h1>
           </div>
 
           <p>
