@@ -140,15 +140,29 @@ function SharedPortfolios() {
   }
 
   function getLoggedInUser() {
-    const token = localStorage.getItem("id_token");
-    const reviewerId = localStorage.getItem("userId");
+  const token = localStorage.getItem("id_token");
 
-    if (!token || !reviewerId) {
-      throw new Error("Please log in to like, rate, or comment.");
-    }
-
-    return { token, reviewerId };
+  if (!token) {
+    throw new Error("Please log in to like, rate, or comment.");
   }
+
+  const payload = JSON.parse(
+    atob(
+      token
+        .split(".")[1]
+        .replace(/-/g, "+")
+        .replace(/_/g, "/")
+    )
+  );
+
+  const reviewerId = payload.sub;
+
+  if (!reviewerId) {
+    throw new Error("Could not identify the logged-in user.");
+  }
+
+  return { token, reviewerId };
+}
 
   async function saveLike(portfolio, value) {
     try {
@@ -320,140 +334,107 @@ function SharedPortfolios() {
             <div key={portfolio.portfolioId}>
               {renderPortfolioTemplate(portfolio)}
 
-              <section
-                style={{
-                  maxWidth: "700px",
-                  margin: "0 auto 30px",
-                  padding: "20px",
-                  border: "1px solid #ddd",
-                  borderRadius: "12px",
-                  background: "#ffffff",
-                }}
-              >
-                <h3>Reviews</h3>
+              <section className="portfolio-review-section">
+  {/* LIKE */}
+  <div className="review-card like-card">
+    <div className="review-icon">♥</div>
 
-                <p>
-                  ❤️ Likes: <strong>{review.likedCount || 0}</strong>
-                </p>
+    <div className="review-content">
+      <h3>Likes</h3>
+      <p>{review.likedCount || 0} likes</p>
+    </div>
 
-                <p>
-                  ⭐ Average rating:{" "}
-                  <strong>
-                    {review.averageRating || 0} / 5
-                  </strong>{" "}
-                  ({review.ratingCount || 0} ratings)
-                </p>
+    <button
+      type="button"
+      className="like-button"
+      onClick={() => saveLike(portfolio, "liked")}
+      disabled={actionLoading[`like-${portfolio.portfolioId}`]}
+    >
+      ♥ Like
+    </button>
+  </div>
 
-                <div style={{ marginBottom: "18px" }}>
-                  <p>Do you like this portfolio?</p>
+  {/* RATING */}
+  <div className="review-card rating-card">
+    <div className="rating-info">
+      <h3>Rating</h3>
+      <p>
+        <strong>{review.averageRating || 0}</strong> / 5
+      </p>
+      <span>({review.ratingCount || 0} ratings)</span>
+    </div>
 
-                  <button
-                    type="button"
-                    onClick={() => saveLike(portfolio, "liked")}
-                    disabled={
-                      actionLoading[`like-${portfolio.portfolioId}`]
-                    }
-                    style={{ marginRight: "10px" }}
-                  >
-                    ❤️ Like
-                  </button>
+    <div className="rating-actions">
+      <div className="star-rating">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            key={star}
+            type="button"
+            className="star-button"
+            onClick={() => saveRating(portfolio, star)}
+            disabled={actionLoading[`rating-${portfolio.portfolioId}`]}
+            title={`Give ${star} star`}
+          >
+            ★
+          </button>
+        ))}
+      </div>
 
-                  <button
-                    type="button"
-                    onClick={() => saveLike(portfolio, "unliked")}
-                    disabled={
-                      actionLoading[`like-${portfolio.portfolioId}`]
-                    }
-                  >
-                    Remove Like
-                  </button>
-                </div>
+      <p className="rating-help-text">Click a star to rate</p>
+    </div>
+  </div>
 
-                <div style={{ marginBottom: "18px" }}>
-                  <p>Rate this portfolio:</p>
+  {/* COMMENTS */}
+  <div className="review-card comments-card">
+    <h3>Comments ({review.comments?.length || 0})</h3>
 
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <button
-                      key={star}
-                      type="button"
-                      onClick={() => saveRating(portfolio, star)}
-                      disabled={
-                        actionLoading[
-                          `rating-${portfolio.portfolioId}`
-                        ]
-                      }
-                      style={{
-                        border: "none",
-                        background: "transparent",
-                        fontSize: "24px",
-                        cursor: "pointer",
-                        padding: "2px",
-                      }}
-                      title={`${star} star`}
-                    >
-                      ⭐
-                    </button>
-                  ))}
-                </div>
+    <div className="comment-form">
+      <textarea
+        rows="3"
+        value={commentText[portfolio.portfolioId] || ""}
+        onChange={(event) =>
+          setCommentText((current) => ({
+            ...current,
+            [portfolio.portfolioId]: event.target.value,
+          }))
+        }
+        placeholder="Write a comment..."
+      />
 
-                <div style={{ marginBottom: "20px" }}>
-                  <p>Add a comment:</p>
+      <button
+        type="button"
+        className="comment-submit-button"
+        onClick={() => saveComment(portfolio)}
+        disabled={actionLoading[`comment-${portfolio.portfolioId}`]}
+      >
+        {actionLoading[`comment-${portfolio.portfolioId}`]
+          ? "Posting..."
+          : "Post Comment"}
+      </button>
+    </div>
 
-                  <textarea
-                    rows="3"
-                    value={commentText[portfolio.portfolioId] || ""}
-                    onChange={(event) =>
-                      setCommentText((current) => ({
-                        ...current,
-                        [portfolio.portfolioId]: event.target.value,
-                      }))
-                    }
-                    placeholder="Write your comment here..."
-                    style={{
-                      width: "100%",
-                      boxSizing: "border-box",
-                      padding: "10px",
-                      marginBottom: "10px",
-                    }}
-                  />
+    <div className="comments-list">
+      {review.comments?.length ? (
+        review.comments.map((comment, index) => (
+          <div
+            className="single-comment"
+            key={comment.reviewKey || index}
+          >
+            <div className="comment-avatar">
+              {String(comment.reviewerId || "U")
+                .charAt(0)
+                .toUpperCase()}
+            </div>
 
-                  <button
-                    type="button"
-                    onClick={() => saveComment(portfolio)}
-                    disabled={
-                      actionLoading[
-                        `comment-${portfolio.portfolioId}`
-                      ]
-                    }
-                  >
-                    {actionLoading[`comment-${portfolio.portfolioId}`]
-                      ? "Posting..."
-                      : "Post Comment"}
-                  </button>
-                </div>
-
-                <div>
-                  <h4>Comments ({review.comments?.length || 0})</h4>
-
-                  {review.comments?.length ? (
-                    review.comments.map((comment, index) => (
-                      <div
-                        key={comment.reviewKey || index}
-                        style={{
-                          borderTop: "1px solid #eee",
-                          padding: "10px 0",
-                        }}
-                      >
-                        <p style={{ margin: 0 }}>
-                          {comment.value}
-                        </p>
-                      </div>
-                    ))
-                  ) : (
-                    <p>No comments yet.</p>
-                  )}
-                </div>
-              </section>
+            <p>{comment.value}</p>
+          </div>
+        ))
+      ) : (
+        <p className="no-comments">No comments yet.</p>
+      )}
+    </div>
+  </div>
+</section>
             </div>
           );
         })

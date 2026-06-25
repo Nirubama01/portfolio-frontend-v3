@@ -2283,3 +2283,206 @@ code {
   color: #7b6470;
   font-size: 13px;
 }
+/* ===== Shared portfolio review cards ===== */
+
+.portfolio-review-section {
+  max-width: 700px;
+  margin: 0 auto 36px;
+  display: grid;
+  gap: 18px;
+}
+
+.review-card {
+  background: #ffffff;
+  border: 1px solid #f0dce5;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 8px 22px rgba(92, 28, 58, 0.07);
+}
+
+.review-card h3 {
+  margin: 0;
+  color: #2e1722;
+  font-size: 20px;
+}
+
+/* Like card */
+.like-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.review-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffe3ee;
+  color: #f6338c;
+  font-size: 30px;
+}
+
+.review-content {
+  flex: 1;
+}
+
+.review-content p {
+  margin: 6px 0 0;
+  color: #775465;
+}
+
+.like-button,
+.comment-submit-button {
+  border: none;
+  border-radius: 10px;
+  padding: 11px 18px;
+  background: #f6338c;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.like-button:hover:not(:disabled),
+.comment-submit-button:hover:not(:disabled) {
+  background: #d91d70;
+  transform: translateY(-1px);
+}
+
+/* Rating card */
+.rating-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+.rating-info p {
+  margin: 8px 0 2px;
+  color: #4d2638;
+  font-size: 19px;
+}
+
+.rating-info strong {
+  font-size: 30px;
+}
+
+.rating-info span,
+.rating-help-text {
+  color: #806071;
+  font-size: 14px;
+}
+
+.rating-actions {
+  text-align: center;
+}
+
+.star-rating {
+  display: flex;
+  gap: 7px;
+}
+
+.star-button {
+  border: none;
+  background: transparent;
+  padding: 0;
+  color: #f7b916;
+  font-size: 37px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.star-button:hover:not(:disabled) {
+  transform: scale(1.12);
+}
+
+.rating-help-text {
+  margin: 9px 0 0;
+}
+
+/* Comment card */
+.comment-form {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.comment-form textarea {
+  flex: 1;
+  min-height: 74px;
+  resize: vertical;
+  box-sizing: border-box;
+  border: 1px solid #e8c9d7;
+  border-radius: 10px;
+  padding: 12px;
+  font: inherit;
+  outline: none;
+}
+
+.comment-form textarea:focus {
+  border-color: #f6338c;
+  box-shadow: 0 0 0 3px rgba(246, 51, 140, 0.12);
+}
+
+.comments-list {
+  margin-top: 18px;
+}
+
+.single-comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 0;
+  border-top: 1px solid #f3e4ea;
+}
+
+.comment-avatar {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffe3ee;
+  color: #e52b7b;
+  font-weight: 800;
+}
+
+.single-comment p {
+  margin: 8px 0 0;
+  color: #513142;
+  line-height: 1.5;
+}
+
+.no-comments {
+  margin: 18px 0 0;
+  color: #806071;
+}
+
+.like-button:disabled,
+.comment-submit-button:disabled,
+.star-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+@media (max-width: 600px) {
+  .like-card,
+  .rating-card,
+  .comment-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .rating-actions {
+    text-align: left;
+  }
+
+  .like-button,
+  .comment-submit-button {
+    width: 100%;
+  }
+}
