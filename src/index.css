@@ -513,11 +513,12 @@ code {
   background: var(--bg);
   box-shadow: var(--shadow);
 }
-
 .portfolio-template-preview {
-  max-height: 580px;
-  overflow: auto;
-  border-bottom: 1px solid var(--border);
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  overflow: visible;
+  background: transparent;
 }
 
 .portfolio-item-actions {
@@ -2910,10 +2911,12 @@ button.compact-review-action:hover {
   gap: 28px;
 }
 
-.portfolio-item-card {
+ .portfolio-item-card {
+  width: 100%;
+  height: auto;
+  min-height: 0;
   overflow: visible;
 }
-
 .portfolio-template-preview {
   max-height: 500px;
   overflow: hidden;
