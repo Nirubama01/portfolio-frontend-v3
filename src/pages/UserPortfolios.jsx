@@ -21,6 +21,8 @@ function UserPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
   const [reviews, setReviews] = useState({});
   const [commentInputs, setCommentInputs] = useState({});
+  const [openComments, setOpenComments] = useState({});
+  const [openRatings, setOpenRatings] = useState({});
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
   const [actionLoading, setActionLoading] = useState({});
@@ -106,11 +108,22 @@ function UserPortfolios() {
     }));
   };
 
-  const saveLike = async (portfolio) => {
+  const canReviewPortfolio = (portfolio) => {
     if (!reviewerId) {
-      alert("Please log in again before liking a portfolio.");
-      return;
+      alert("Please log in again first.");
+      return false;
     }
+
+    if (portfolio.userId === reviewerId) {
+      alert("You cannot review your own portfolio.");
+      return false;
+    }
+
+    return true;
+  };
+
+  const saveLike = async (portfolio) => {
+    if (!canReviewPortfolio(portfolio)) return;
 
     try {
       setPortfolioLoading(portfolio.portfolioId, true);
@@ -145,10 +158,7 @@ function UserPortfolios() {
   };
 
   const saveRating = async (portfolio, rating) => {
-    if (!reviewerId) {
-      alert("Please log in again before rating a portfolio.");
-      return;
-    }
+    if (!canReviewPortfolio(portfolio)) return;
 
     try {
       setPortfolioLoading(portfolio.portfolioId, true);
@@ -174,6 +184,11 @@ function UserPortfolios() {
       }
 
       await loadReviews(portfolio.portfolioId);
+
+      setOpenRatings((previous) => ({
+        ...previous,
+        [portfolio.portfolioId]: false,
+      }));
     } catch (error) {
       console.error("Rating error:", error);
       alert(error.message || "Could not save rating.");
@@ -183,15 +198,12 @@ function UserPortfolios() {
   };
 
   const saveComment = async (portfolio) => {
+    if (!canReviewPortfolio(portfolio)) return;
+
     const comment = (commentInputs[portfolio.portfolioId] || "").trim();
 
     if (!comment) {
       alert("Please write a comment first.");
-      return;
-    }
-
-    if (!reviewerId) {
-      alert("Please log in again before posting a comment.");
       return;
     }
 
@@ -294,6 +306,8 @@ function UserPortfolios() {
             };
 
             const isSaving = actionLoading[portfolio.portfolioId];
+            const commentsAreOpen = openComments[portfolio.portfolioId];
+            const ratingsAreOpen = openRatings[portfolio.portfolioId];
 
             return (
               <article
@@ -303,99 +317,127 @@ function UserPortfolios() {
                 <div className="portfolio-template-preview">
                   {renderTemplate(portfolio)}
                 </div>
-<section className="compact-review-bar">
-  <button
-    type="button"
-    className="compact-review-action"
-    onClick={() => saveLike(portfolio)}
-    disabled={isSaving}
-  >
-    <span className="compact-review-icon">♥</span>
-    <span>{review.likedCount} likes</span>
-  </button>
 
-  <details className="compact-review-action compact-rating-details">
-    <summary>
-      <span className="compact-review-icon">★</span>
-      <span>
-        {review.averageRating
-          ? Number(review.averageRating).toFixed(1)
-          : "0.0"}{" "}
-        / 5
-      </span>
-    </summary>
+                <section className="compact-review-bar">
+                  <button
+                    type="button"
+                    className="compact-review-action"
+                    onClick={() => saveLike(portfolio)}
+                    disabled={isSaving}
+                    title="Like this portfolio"
+                  >
+                    <span className="compact-review-icon">♥</span>
+                    <span>{review.likedCount}</span>
+                  </button>
 
-    <div className="compact-rating-popup">
-      <p>Rate this portfolio</p>
+                  <div className="compact-review-menu">
+                    <button
+                      type="button"
+                      className="compact-review-action"
+                      onClick={() =>
+                        setOpenRatings((previous) => ({
+                          ...previous,
+                          [portfolio.portfolioId]: !ratingsAreOpen,
+                        }))
+                      }
+                      disabled={isSaving}
+                      title="Rate this portfolio"
+                    >
+                      <span className="compact-review-icon">★</span>
+                      <span>
+                        {Number(review.averageRating || 0).toFixed(1)}
+                      </span>
+                    </button>
 
-      <div className="compact-stars">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <button
-            type="button"
-            key={star}
-            onClick={() => saveRating(portfolio, star)}
-            disabled={isSaving}
-            aria-label={`Give ${star} star rating`}
-          >
-            ★
-          </button>
-        ))}
-      </div>
+                    {ratingsAreOpen && (
+                      <div className="compact-review-popup">
+                        <p>Rate this portfolio</p>
 
-      <small>{review.ratingCount} ratings</small>
-    </div>
-  </details>
+                        <div className="compact-stars">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              type="button"
+                              key={star}
+                              onClick={() => saveRating(portfolio, star)}
+                              disabled={isSaving}
+                              aria-label={`Give ${star} star rating`}
+                            >
+                              ★
+                            </button>
+                          ))}
+                        </div>
 
-  <details className="compact-review-action compact-comments-details">
-    <summary>
-      <span className="compact-review-icon">💬</span>
-      <span>Comments ({review.comments.length})</span>
-    </summary>
+                        <small>{review.ratingCount} ratings</small>
+                      </div>
+                    )}
+                  </div>
 
-    <div className="compact-comments-popup">
-      <div className="compact-comment-form">
-        <textarea
-          value={commentInputs[portfolio.portfolioId] || ""}
-          placeholder="Write a comment..."
-          rows="2"
-          onChange={(event) =>
-            setCommentInputs((previousInputs) => ({
-              ...previousInputs,
-              [portfolio.portfolioId]: event.target.value,
-            }))
-          }
-        />
+                  <div className="compact-review-menu">
+                    <button
+                      type="button"
+                      className="compact-review-action"
+                      onClick={() =>
+                        setOpenComments((previous) => ({
+                          ...previous,
+                          [portfolio.portfolioId]: !commentsAreOpen,
+                        }))
+                      }
+                      title="View or add comments"
+                    >
+                      <span className="compact-review-icon">💬</span>
+                      <span>{review.comments.length}</span>
+                    </button>
 
-        <button
-          type="button"
-          onClick={() => saveComment(portfolio)}
-          disabled={isSaving}
-        >
-          Post
-        </button>
-      </div>
+                    {commentsAreOpen && (
+                      <div className="compact-comments-popup">
+                        <div className="compact-comment-form">
+                          <textarea
+                            value={commentInputs[portfolio.portfolioId] || ""}
+                            placeholder="Write a comment..."
+                            rows="2"
+                            onChange={(event) =>
+                              setCommentInputs((previousInputs) => ({
+                                ...previousInputs,
+                                [portfolio.portfolioId]: event.target.value,
+                              }))
+                            }
+                          />
 
-      {review.comments.length === 0 ? (
-        <p className="compact-no-comments">No comments yet.</p>
-      ) : (
-        <div className="compact-comments-list">
-          {review.comments.map((comment, index) => (
-            <div
-              className="compact-comment-item"
-              key={`${comment.reviewerId}-${comment.createdAt || index}`}
-            >
-              <span>
-                {(comment.reviewerId || "U").charAt(0).toUpperCase()}
-              </span>
+                          <button
+                            type="button"
+                            onClick={() => saveComment(portfolio)}
+                            disabled={isSaving}
+                          >
+                            Post
+                          </button>
+                        </div>
 
-              <p>{comment.value}</p>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  </details>
-</section>
+                        {review.comments.length === 0 ? (
+                          <p className="compact-no-comments">
+                            No comments yet.
+                          </p>
+                        ) : (
+                          <div className="compact-comments-list">
+                            {review.comments.map((comment, index) => (
+                              <div
+                                className="compact-comment-item"
+                                key={`${comment.reviewerId}-${comment.createdAt || index}`}
+                              >
+                                <span>
+                                  {(comment.reviewerId || "U")
+                                    .charAt(0)
+                                    .toUpperCase()}
+                                </span>
+
+                                <p>{comment.value}</p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </section>
               </article>
             );
           })}
