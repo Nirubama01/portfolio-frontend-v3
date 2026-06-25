@@ -85,6 +85,7 @@ function UserPortfolios() {
         }
 
         const portfolioList = Array.isArray(data) ? data : [];
+
         setPortfolios(portfolioList);
 
         await Promise.all(
@@ -236,6 +237,11 @@ function UserPortfolios() {
       }));
 
       await loadReviews(portfolio.portfolioId);
+
+      setOpenComments((previous) => ({
+        ...previous,
+        [portfolio.portfolioId]: false,
+      }));
     } catch (error) {
       console.error("Comment error:", error);
       alert(error.message || "Could not post comment.");
@@ -382,6 +388,7 @@ function UserPortfolios() {
                           [portfolio.portfolioId]: !commentsAreOpen,
                         }))
                       }
+                      disabled={isSaving}
                       title="View or add comments"
                     >
                       <span className="compact-review-icon">💬</span>
@@ -390,9 +397,29 @@ function UserPortfolios() {
 
                     {commentsAreOpen && (
                       <div className="compact-comments-popup">
+                        <div className="compact-comments-popup-header">
+                          <strong>Comments ({review.comments.length})</strong>
+
+                          <button
+                            type="button"
+                            className="compact-comments-close"
+                            onClick={() =>
+                              setOpenComments((previous) => ({
+                                ...previous,
+                                [portfolio.portfolioId]: false,
+                              }))
+                            }
+                            aria-label="Close comments"
+                          >
+                            ×
+                          </button>
+                        </div>
+
                         <div className="compact-comment-form">
                           <textarea
-                            value={commentInputs[portfolio.portfolioId] || ""}
+                            value={
+                              commentInputs[portfolio.portfolioId] || ""
+                            }
                             placeholder="Write a comment..."
                             rows="2"
                             onChange={(event) =>
@@ -421,15 +448,22 @@ function UserPortfolios() {
                             {review.comments.map((comment, index) => (
                               <div
                                 className="compact-comment-item"
-                                key={`${comment.reviewerId}-${comment.createdAt || index}`}
+                                key={`${comment.reviewerId}-${
+                                  comment.createdAt || index
+                                }`}
                               >
-                                <span>
-                                  {(comment.reviewerId || "U")
+                                <span className="compact-comment-avatar">
+                                  {(comment.reviewerUsername || "U")
                                     .charAt(0)
                                     .toUpperCase()}
                                 </span>
 
-                                <p>{comment.value}</p>
+                                <div>
+                                  <strong>
+                                    @{comment.reviewerUsername || "User"}
+                                  </strong>
+                                  <p>{comment.value}</p>
+                                </div>
                               </div>
                             ))}
                           </div>

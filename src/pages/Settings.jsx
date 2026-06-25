@@ -217,7 +217,7 @@ if (!profileResponse.ok) {
     type="text"
     value={socialUsername}
     maxLength="30"
-    placeholder="Example: nirubama"
+    placeholder="Enter your username"
     onChange={(event) =>
       setSocialUsername(
         event.target.value

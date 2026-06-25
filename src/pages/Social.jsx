@@ -82,7 +82,7 @@ function Social() {
           <input
             type="text"
             value={username}
-            placeholder="Example: nirubama"
+            placeholder="Search for user"
             onChange={(event) => setUsername(event.target.value)}
           />
 
