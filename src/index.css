@@ -2491,3 +2491,19 @@ code {
   color: #8a6575;
   font-size: 14px;
 }
+.my-portfolio-review-summary {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px;
+  border-top: 1px solid #f2dce6;
+  color: #7a3d5a;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.my-portfolio-review-summary span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}

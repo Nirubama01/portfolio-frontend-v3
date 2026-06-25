@@ -17,6 +17,7 @@ const API_URL =
 
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
+  const [reviewsByPortfolio, setReviewsByPortfolio] = useState({});
   const [loading, setLoading] = useState(true);
 
   const [shareOpen, setShareOpen] = useState(false);
@@ -26,21 +27,69 @@ function MyPortfolios() {
 
   const navigate = useNavigate();
 
+  const loadPortfolioReviews = async (portfolioId) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/review?portfolioId=${encodeURIComponent(portfolioId)}`
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not load reviews.");
+      }
+
+      setReviewsByPortfolio((current) => ({
+        ...current,
+        [portfolioId]: data,
+      }));
+    } catch (error) {
+      console.error("Could not load portfolio reviews:", error);
+
+      setReviewsByPortfolio((current) => ({
+        ...current,
+        [portfolioId]: {
+          likedCount: 0,
+          averageRating: 0,
+          ratingCount: 0,
+          comments: [],
+        },
+      }));
+    }
+  };
+
   useEffect(() => {
     const userId = localStorage.getItem("userId");
 
-    fetch(`${API_URL}?userId=${userId}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setPortfolios(Array.isArray(data) ? data : []);
-      })
-      .catch((error) => {
+    async function loadPortfolios() {
+      try {
+        setLoading(true);
+
+        const response = await fetch(`${API_URL}?userId=${userId}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || "Could not load portfolios.");
+        }
+
+        const userPortfolios = Array.isArray(data) ? data : [];
+
+        setPortfolios(userPortfolios);
+
+        await Promise.all(
+          userPortfolios.map((portfolio) =>
+            loadPortfolioReviews(portfolio.portfolioId)
+          )
+        );
+      } catch (error) {
         console.error("Could not load portfolios:", error);
         setPortfolios([]);
-      })
-      .finally(() => {
+      } finally {
         setLoading(false);
-      });
+      }
+    }
+
+    loadPortfolios();
   }, []);
 
   const deletePortfolio = async (userId, portfolioId) => {
@@ -72,6 +121,12 @@ function MyPortfolios() {
           (portfolio) => portfolio.portfolioId !== portfolioId
         )
       );
+
+      setReviewsByPortfolio((current) => {
+        const updated = { ...current };
+        delete updated[portfolioId];
+        return updated;
+      });
 
       alert("Portfolio deleted successfully.");
     } catch (error) {
@@ -207,40 +262,60 @@ function MyPortfolios() {
         </section>
       ) : (
         <section className="portfolio-list">
-          {portfolios.map((portfolio) => (
-            <article
-              className="portfolio-item-card"
-              key={portfolio.portfolioId}
-            >
-              <div className="portfolio-template-preview">
-                {renderTemplate(portfolio)}
-              </div>
+          {portfolios.map((portfolio) => {
+            const review = reviewsByPortfolio[portfolio.portfolioId] || {
+              likedCount: 0,
+              averageRating: 0,
+              ratingCount: 0,
+              comments: [],
+            };
 
-              <div className="portfolio-item-actions">
-                <button
-                  className="edit-portfolio-button"
-                  onClick={() =>
-                    navigate("/edit-portfolio", {
-                      state: portfolio,
-                    })
-                  }
-                >
-                  Edit
-                </button>
+            return (
+              <article
+                className="portfolio-item-card"
+                key={portfolio.portfolioId}
+              >
+                <div className="portfolio-template-preview">
+                  {renderTemplate(portfolio)}
+                </div>
 
-                <button
-                  className="delete-portfolio-button"
-                  onClick={() =>
-                    deletePortfolio(portfolio.userId, portfolio.portfolioId)
-                  }
-                >
-                  Delete
-                </button>
-              </div>
-            </article>
-          ))}
+                <div className="my-portfolio-review-summary">
+                  <span>♥ {review.likedCount || 0}</span>
+
+                  <span>
+                    ★ {review.averageRating || 0}/5 ({review.ratingCount || 0})
+                  </span>
+
+                  <span>💬 {review.comments?.length || 0}</span>
+                </div>
+
+                <div className="portfolio-item-actions">
+                  <button
+                    className="edit-portfolio-button"
+                    onClick={() =>
+                      navigate("/edit-portfolio", {
+                        state: portfolio,
+                      })
+                    }
+                  >
+                    Edit
+                  </button>
+
+                  <button
+                    className="delete-portfolio-button"
+                    onClick={() =>
+                      deletePortfolio(portfolio.userId, portfolio.portfolioId)
+                    }
+                  >
+                    Delete
+                  </button>
+                </div>
+              </article>
+            );
+          })}
         </section>
       )}
+
       <div className="share-page-footer">
         <button
           type="button"
