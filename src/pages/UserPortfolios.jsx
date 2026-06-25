@@ -30,6 +30,34 @@ function UserPortfolios() {
   const reviewerId = localStorage.getItem("userId");
   const token = localStorage.getItem("id_token");
 
+  const loadReviews = async (portfolioId) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/portfolio/review?portfolioId=${encodeURIComponent(
+          portfolioId
+        )}`
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not load reviews.");
+      }
+
+      setReviews((previousReviews) => ({
+        ...previousReviews,
+        [portfolioId]: {
+          likedCount: data.likedCount || 0,
+          averageRating: data.averageRating || 0,
+          ratingCount: data.ratingCount || 0,
+          comments: Array.isArray(data.comments) ? data.comments : [],
+        },
+      }));
+    } catch (error) {
+      console.error("Could not load reviews:", error);
+    }
+  };
+
   useEffect(() => {
     const loadPortfolios = async () => {
       if (!userId) {
@@ -71,34 +99,6 @@ function UserPortfolios() {
     loadPortfolios();
   }, [userId]);
 
-  const loadReviews = async (portfolioId) => {
-    try {
-      const response = await fetch(
-        `${API_URL}/portfolio/review?portfolioId=${encodeURIComponent(
-          portfolioId
-        )}`
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Could not load reviews.");
-      }
-
-      setReviews((previousReviews) => ({
-        ...previousReviews,
-        [portfolioId]: {
-          likedCount: data.likedCount || 0,
-          averageRating: data.averageRating || 0,
-          ratingCount: data.ratingCount || 0,
-          comments: Array.isArray(data.comments) ? data.comments : [],
-        },
-      }));
-    } catch (error) {
-      console.error("Could not load reviews:", error);
-    }
-  };
-
   const setPortfolioLoading = (portfolioId, value) => {
     setActionLoading((previousLoading) => ({
       ...previousLoading,
@@ -115,22 +115,19 @@ function UserPortfolios() {
     try {
       setPortfolioLoading(portfolio.portfolioId, true);
 
-      const response = await fetch(
-        `${API_URL}/portfolio/review/like`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: token } : {}),
-          },
-          body: JSON.stringify({
-            portfolioId: portfolio.portfolioId,
-            userId: portfolio.userId,
-            reviewerId,
-            value: "liked",
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/portfolio/review/like`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: token } : {}),
+        },
+        body: JSON.stringify({
+          portfolioId: portfolio.portfolioId,
+          userId: portfolio.userId,
+          reviewerId,
+          value: "liked",
+        }),
+      });
 
       const data = await response.json();
 
@@ -156,22 +153,19 @@ function UserPortfolios() {
     try {
       setPortfolioLoading(portfolio.portfolioId, true);
 
-      const response = await fetch(
-        `${API_URL}/portfolio/review/rating`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: token } : {}),
-          },
-          body: JSON.stringify({
-            portfolioId: portfolio.portfolioId,
-            userId: portfolio.userId,
-            reviewerId,
-            value: String(rating),
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/portfolio/review/rating`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: token } : {}),
+        },
+        body: JSON.stringify({
+          portfolioId: portfolio.portfolioId,
+          userId: portfolio.userId,
+          reviewerId,
+          value: String(rating),
+        }),
+      });
 
       const data = await response.json();
 
@@ -204,22 +198,19 @@ function UserPortfolios() {
     try {
       setPortfolioLoading(portfolio.portfolioId, true);
 
-      const response = await fetch(
-        `${API_URL}/portfolio/review/comment`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: token } : {}),
-          },
-          body: JSON.stringify({
-            portfolioId: portfolio.portfolioId,
-            userId: portfolio.userId,
-            reviewerId,
-            value: comment,
-          }),
-        }
-      );
+      const response = await fetch(`${API_URL}/portfolio/review/comment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: token } : {}),
+        },
+        body: JSON.stringify({
+          portfolioId: portfolio.portfolioId,
+          userId: portfolio.userId,
+          reviewerId,
+          value: comment,
+        }),
+      });
 
       const data = await response.json();
 
@@ -245,25 +236,18 @@ function UserPortfolios() {
     switch (portfolio.template) {
       case "dark":
         return <DarkTemplate portfolio={portfolio} />;
-
       case "resume":
         return <ResumeTemplate portfolio={portfolio} />;
-
       case "developer":
         return <DeveloperTemplate portfolio={portfolio} />;
-
       case "modern":
         return <ModernTemplate portfolio={portfolio} />;
-
       case "showcase":
         return <ShowcaseTemplate portfolio={portfolio} />;
-
       case "neon":
         return <NeonTemplate portfolio={portfolio} />;
-
       case "terminal":
         return <TerminalTemplate portfolio={portfolio} />;
-
       default:
         return <ClassicTemplate portfolio={portfolio} />;
     }
