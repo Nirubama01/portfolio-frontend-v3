@@ -3096,3 +3096,195 @@ button.compact-review-action:hover {
     font-size: 0.9rem;
   }
 }
+/* =========================
+   SOCIAL SEARCH PAGE
+========================= */
+
+.social-page {
+  width: min(920px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 34px 0 70px;
+}
+
+.social-header {
+  margin: 28px 0 24px;
+  text-align: center;
+}
+
+.social-eyebrow {
+  margin: 0 0 8px;
+  color: #ef3d8d;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.social-header h1 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.1;
+}
+
+.social-header p:not(.social-eyebrow) {
+  max-width: 570px;
+  margin: 14px auto 0;
+  color: #806779;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.social-search-card {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 32px;
+  border: 1px solid #f3cddd;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.88);
+  box-shadow: 0 18px 45px rgba(119, 42, 79, 0.1);
+}
+
+.social-search-card h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 1.4rem;
+}
+
+.social-search-card > p {
+  margin: 8px 0 22px;
+  color: #806779;
+  line-height: 1.5;
+}
+
+.social-search-form {
+  display: flex;
+  gap: 10px;
+}
+
+.social-search-form input {
+  width: 100%;
+  min-width: 0;
+  padding: 13px 15px;
+  border: 1px solid #f1bdd4;
+  border-radius: 12px;
+  outline: none;
+  background: #fffafd;
+  color: var(--text);
+  font: inherit;
+}
+
+.social-search-form input:focus {
+  border-color: #f52d88;
+  box-shadow: 0 0 0 4px rgba(245, 45, 136, 0.12);
+}
+
+.social-search-form button {
+  flex: 0 0 auto;
+  padding: 13px 21px;
+  border: none;
+  border-radius: 12px;
+  background: #f52d88;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.social-search-form button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 9px 18px rgba(245, 45, 136, 0.25);
+}
+
+.social-search-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.social-message {
+  margin: 16px 0 0;
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: #fff0f6;
+  color: #b42364;
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.social-user-result {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 14px;
+  margin-top: 20px;
+  padding: 16px;
+  border: 1px solid #f1bfd5;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #fff7fb, #ffffff);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.social-user-result:hover {
+  transform: translateY(-3px);
+  border-color: #f52d88;
+  box-shadow: 0 12px 24px rgba(184, 42, 105, 0.14);
+}
+
+.social-user-avatar {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  flex: 0 0 48px;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffb4d5, #f52d88);
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.social-user-details {
+  display: grid;
+  gap: 4px;
+}
+
+.social-user-details strong {
+  color: #6f244c;
+  font-size: 1rem;
+}
+
+.social-user-details small {
+  color: #806779;
+  font-size: 0.88rem;
+}
+
+.social-arrow {
+  margin-left: auto;
+  color: #f52d88;
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+
+@media (max-width: 600px) {
+  .social-page {
+    width: min(100% - 24px, 920px);
+    padding-top: 20px;
+  }
+
+  .social-search-card {
+    padding: 22px 18px;
+    border-radius: 18px;
+  }
+
+  .social-search-form {
+    flex-direction: column;
+  }
+
+  .social-search-form button {
+    width: 100%;
+  }
+}
