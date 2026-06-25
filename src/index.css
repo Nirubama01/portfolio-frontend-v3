@@ -2883,3 +2883,54 @@ button.compact-review-action:hover {
     transform: none;
   }
 }
+/* Social search portfolio page - compact previews */
+.user-portfolios-page {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 28px 18px 60px;
+}
+
+.user-portfolios-header {
+  margin: 18px 0 26px;
+  text-align: center;
+}
+
+.user-portfolios-header h1 {
+  margin: 6px 0;
+  font-size: 1.8rem;
+}
+
+.user-portfolios-header p {
+  margin: 0;
+  color: #806376;
+}
+
+.portfolio-list {
+  display: grid;
+  gap: 28px;
+}
+
+.portfolio-item-card {
+  overflow: visible;
+}
+
+.portfolio-template-preview {
+  max-height: 500px;
+  overflow: hidden;
+  border: 1px solid #f2d6e4;
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+/* Makes the complete portfolio template appear as a preview */
+.portfolio-template-preview > * {
+  transform: scale(0.72);
+  transform-origin: top left;
+  width: 138.9%;
+  margin-bottom: -28%;
+}
+
+/* Compact review buttons below the preview */
+.compact-review-bar {
+  margin-top: 12px;
+}
