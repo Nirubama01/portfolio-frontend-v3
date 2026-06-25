@@ -303,100 +303,99 @@ function UserPortfolios() {
                 <div className="portfolio-template-preview">
                   {renderTemplate(portfolio)}
                 </div>
+<section className="compact-review-bar">
+  <button
+    type="button"
+    className="compact-review-action"
+    onClick={() => saveLike(portfolio)}
+    disabled={isSaving}
+  >
+    <span className="compact-review-icon">♥</span>
+    <span>{review.likedCount} likes</span>
+  </button>
 
-                <section className="portfolio-review-card">
-                  <div className="review-top-row">
-                    <div>
-                      <span className="review-label">Likes</span>
-                      <strong>♥ {review.likedCount}</strong>
-                    </div>
+  <details className="compact-review-action compact-rating-details">
+    <summary>
+      <span className="compact-review-icon">★</span>
+      <span>
+        {review.averageRating
+          ? Number(review.averageRating).toFixed(1)
+          : "0.0"}{" "}
+        / 5
+      </span>
+    </summary>
 
-                    <button
-                      type="button"
-                      className="review-like-button"
-                      onClick={() => saveLike(portfolio)}
-                      disabled={isSaving}
-                    >
-                      ♥ Like
-                    </button>
-                  </div>
+    <div className="compact-rating-popup">
+      <p>Rate this portfolio</p>
 
-                  <div className="review-rating-row">
-                    <div>
-                      <span className="review-label">Rating</span>
-                      <strong>
-                        {review.averageRating
-                          ? Number(review.averageRating).toFixed(1)
-                          : "0.0"}{" "}
-                        / 5
-                      </strong>
-                      <small>({review.ratingCount} ratings)</small>
-                    </div>
+      <div className="compact-stars">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <button
+            type="button"
+            key={star}
+            onClick={() => saveRating(portfolio, star)}
+            disabled={isSaving}
+            aria-label={`Give ${star} star rating`}
+          >
+            ★
+          </button>
+        ))}
+      </div>
 
-                    <div className="review-stars">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <button
-                          type="button"
-                          key={star}
-                          className="review-star-button"
-                          onClick={() => saveRating(portfolio, star)}
-                          disabled={isSaving}
-                          aria-label={`Give ${star} star rating`}
-                        >
-                          ★
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+      <small>{review.ratingCount} ratings</small>
+    </div>
+  </details>
 
-                  <div className="review-comments-section">
-                    <h3>Comments ({review.comments.length})</h3>
+  <details className="compact-review-action compact-comments-details">
+    <summary>
+      <span className="compact-review-icon">💬</span>
+      <span>Comments ({review.comments.length})</span>
+    </summary>
 
-                    <div className="review-comment-form">
-                      <textarea
-                        value={commentInputs[portfolio.portfolioId] || ""}
-                        placeholder="Write a comment..."
-                        rows="3"
-                        onChange={(event) =>
-                          setCommentInputs((previousInputs) => ({
-                            ...previousInputs,
-                            [portfolio.portfolioId]: event.target.value,
-                          }))
-                        }
-                      />
+    <div className="compact-comments-popup">
+      <div className="compact-comment-form">
+        <textarea
+          value={commentInputs[portfolio.portfolioId] || ""}
+          placeholder="Write a comment..."
+          rows="2"
+          onChange={(event) =>
+            setCommentInputs((previousInputs) => ({
+              ...previousInputs,
+              [portfolio.portfolioId]: event.target.value,
+            }))
+          }
+        />
 
-                      <button
-                        type="button"
-                        className="review-comment-button"
-                        onClick={() => saveComment(portfolio)}
-                        disabled={isSaving}
-                      >
-                        Post Comment
-                      </button>
-                    </div>
+        <button
+          type="button"
+          onClick={() => saveComment(portfolio)}
+          disabled={isSaving}
+        >
+          Post
+        </button>
+      </div>
 
-                    {review.comments.length === 0 ? (
-                      <p className="no-comments-text">No comments yet.</p>
-                    ) : (
-                      <div className="review-comments-list">
-                        {review.comments.map((comment, index) => (
-                          <div
-                            className="review-comment-item"
-                            key={`${comment.reviewerId}-${comment.createdAt || index}`}
-                          >
-                            <span className="review-comment-avatar">
-                              {(comment.reviewerId || "U")
-                                .charAt(0)
-                                .toUpperCase()}
-                            </span>
+      {review.comments.length === 0 ? (
+        <p className="compact-no-comments">No comments yet.</p>
+      ) : (
+        <div className="compact-comments-list">
+          {review.comments.map((comment, index) => (
+            <div
+              className="compact-comment-item"
+              key={`${comment.reviewerId}-${comment.createdAt || index}`}
+            >
+              <span>
+                {(comment.reviewerId || "U").charAt(0).toUpperCase()}
+              </span>
 
-                            <p>{comment.value}</p>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </section>
+              <p>{comment.value}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </details>
+</section>
               </article>
             );
           })}
