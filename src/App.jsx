@@ -11,6 +11,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import AdminDashboard from "./pages/AdminDashboard";
 import Settings from "./pages/Settings";
 import SharedPortfolios from "./pages/SharedPortfolios";
+import Social from "./pages/Social";
+
 
 function App() {
   useEffect(() => {
@@ -77,6 +79,14 @@ function App() {
   element={
     <ProtectedRoute>
       <AdminPortfolioView />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/social"
+  element={
+    <ProtectedRoute>
+      <Social />
     </ProtectedRoute>
   }
 />

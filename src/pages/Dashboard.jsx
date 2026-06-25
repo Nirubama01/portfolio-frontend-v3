@@ -143,6 +143,18 @@ const [profileImageUrl, setProfileImageUrl] = useState(
         </button>
 
         <button
+  className="dashboard-card social-card"
+  onClick={() => navigate("/social")}
+>
+  <span className="dashboard-icon">⌕</span>
+
+  <span>
+    <strong>Social</strong>
+    <small>Find users and explore their portfolios</small>
+  </span>
+</button>
+
+        <button
           className="dashboard-card portfolios-card"
           onClick={() => navigate("/my-portfolios")}
         >
