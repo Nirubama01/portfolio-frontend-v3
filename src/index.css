@@ -2934,3 +2934,64 @@ button.compact-review-action:hover {
 .compact-review-bar {
   margin-top: 12px;
 }
+.username-save-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.username-save-row input {
+  flex: 1;
+}
+
+.username-save-button {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 14px;
+  background: #f52d88;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.username-save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.username-help-text,
+.username-current-text {
+  display: block;
+  margin-top: 8px;
+  color: #806376;
+  line-height: 1.45;
+}
+
+.username-current-text {
+  color: #d31f70;
+  font-weight: 700;
+}
+
+@media (max-width: 560px) {
+  .username-save-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .username-save-button {
+    width: 100%;
+  }
+}
+.username-help-text {
+  display: block;
+  margin-top: 8px;
+  color: #806376;
+  line-height: 1.45;
+}
+
+.settings-field input[readonly] {
+  cursor: not-allowed;
+  opacity: 0.75;
+}

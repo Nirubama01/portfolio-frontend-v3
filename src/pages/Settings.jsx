@@ -13,6 +13,7 @@ function Settings() {
   const navigate = useNavigate();
 
   const [nickname, setNickname] = useState("");
+  const [username, setUsername] = useState("");
   const [theme, setTheme] = useState("light");
   const [fontColor, setFontColor] = useState("#1f2937");
 
@@ -31,6 +32,7 @@ function Settings() {
         const data = await getSettings();
 
         setNickname(data.nickname || "");
+        setUsername(data.username || "");
         setTheme(data.theme || "light");
         setFontColor(data.fontColor || "#1f2937");
         setProfileImageKey(data.profileImageKey || "");
@@ -70,8 +72,6 @@ function Settings() {
     }
 
     setSelectedImage(file);
-
-    // Show a local preview before upload.
     setProfileImageUrl(URL.createObjectURL(file));
   };
 
@@ -101,14 +101,21 @@ function Settings() {
         profileImageKey: imageKeyToSave,
       });
 
+      setNickname(data.nickname || nickname);
+      setUsername(data.username || username);
+      setTheme(data.theme || "light");
+      setFontColor(data.fontColor || "#1f2937");
       setProfileImageKey(data.profileImageKey || "");
       setProfileImageUrl(data.profileImageUrl || profileImageUrl);
       setSelectedImage(null);
 
-      localStorage.setItem("nickname", data.nickname || "");
+      localStorage.setItem("nickname", data.nickname || nickname);
       localStorage.setItem("appTheme", data.theme || "light");
       localStorage.setItem("fontColor", data.fontColor || "#1f2937");
-      localStorage.setItem("profileImageUrl", data.profileImageUrl || "");
+      localStorage.setItem(
+        "profileImageUrl",
+        data.profileImageUrl || profileImageUrl || ""
+      );
 
       document.documentElement.dataset.theme = data.theme || "light";
       document.documentElement.style.setProperty(
@@ -173,8 +180,25 @@ function Settings() {
             </label>
           </div>
 
+          <div className="settings-field">
+            <span>Username</span>
+
+            <input
+              type="text"
+              value={username}
+              readOnly
+              placeholder="Your signup username"
+            />
+
+            <small className="username-help-text">
+              This is your signup username. Other users can search for you in
+              Social.
+            </small>
+          </div>
+
           <label className="settings-field">
             <span>Nickname</span>
+
             <input
               type="text"
               value={nickname}
@@ -245,6 +269,7 @@ function Settings() {
         </div>
 
         {error && <p className="settings-message settings-error">{error}</p>}
+
         {message && (
           <p className="settings-message settings-success">{message}</p>
         )}
