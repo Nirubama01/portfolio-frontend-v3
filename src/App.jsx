@@ -12,6 +12,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Settings from "./pages/Settings";
 import SharedPortfolios from "./pages/SharedPortfolios";
 import Social from "./pages/Social";
+import UserPortfolios from "./pages/UserPortfolios";
 
 
 function App() {
@@ -87,6 +88,15 @@ function App() {
   element={
     <ProtectedRoute>
       <Social />
+    </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/social/:username"
+  element={
+    <ProtectedRoute>
+      <UserPortfolios />
     </ProtectedRoute>
   }
 />
