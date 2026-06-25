@@ -18,6 +18,7 @@ const API_URL =
 function MyPortfolios() {
   const [portfolios, setPortfolios] = useState([]);
   const [reviewsByPortfolio, setReviewsByPortfolio] = useState({});
+  const [openReviews, setOpenReviews] = useState({});
   const [loading, setLoading] = useState(true);
 
   const [shareOpen, setShareOpen] = useState(false);
@@ -280,14 +281,68 @@ function MyPortfolios() {
                 </div>
 
                 <div className="my-portfolio-review-summary">
-                  <span>♥ {review.likedCount || 0}</span>
+  <span>♥ {review.likedCount || 0}</span>
 
-                  <span>
-                    ★ {review.averageRating || 0}/5 ({review.ratingCount || 0})
-                  </span>
+  <span>
+    ★ {Number(review.averageRating || 0).toFixed(1)}/5 (
+    {review.ratingCount || 0})
+  </span>
 
-                  <span>💬 {review.comments?.length || 0}</span>
-                </div>
+  <button
+    type="button"
+    className="my-portfolio-comments-button"
+    onClick={() =>
+      setOpenReviews((current) => ({
+        ...current,
+        [portfolio.portfolioId]: !current[portfolio.portfolioId],
+      }))
+    }
+  >
+    💬 {review.comments?.length || 0}
+  </button>
+</div>
+
+{openReviews[portfolio.portfolioId] && (
+  <section className="my-portfolio-comments-panel">
+    <div className="my-portfolio-comments-heading">
+      <h3>Comments</h3>
+
+      <button
+        type="button"
+        onClick={() =>
+          setOpenReviews((current) => ({
+            ...current,
+            [portfolio.portfolioId]: false,
+          }))
+        }
+        aria-label="Close comments"
+      >
+        ×
+      </button>
+    </div>
+
+    {!review.comments || review.comments.length === 0 ? (
+      <p className="my-portfolio-no-comments">No comments yet.</p>
+    ) : (
+      <div className="my-portfolio-comments-list">
+        {review.comments.map((comment, index) => (
+          <div
+            className="my-portfolio-comment-item"
+            key={`${comment.reviewerId || "user"}-${
+              comment.createdAt || index
+            }`}
+          >
+            <span className="my-portfolio-comment-avatar">
+              {(comment.reviewerId || "U").charAt(0).toUpperCase()}
+            </span>
+
+            <p>{comment.value}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+)}
 
                 <div className="portfolio-item-actions">
                   <button
