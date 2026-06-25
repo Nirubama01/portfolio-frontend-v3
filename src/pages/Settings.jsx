@@ -13,6 +13,7 @@ function Settings() {
   const navigate = useNavigate();
 
   const [nickname, setNickname] = useState("");
+  const [socialUsername, setSocialUsername] = useState("");
   const [username, setUsername] = useState("");
   const [theme, setTheme] = useState("light");
   const [fontColor, setFontColor] = useState("#1f2937");
@@ -93,6 +94,32 @@ function Settings() {
 
         imageKeyToSave = newImageKey;
       }
+      const cleanedUsername = socialUsername.trim();
+
+if (!cleanedUsername) {
+  throw new Error("Please enter a Social username.");
+}
+
+const profileResponse = await fetch(
+  "https://x5xv9nqfag.execute-api.ap-south-1.amazonaws.com/prod/profile",
+  {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: localStorage.getItem("id_token"),
+    },
+    body: JSON.stringify({
+      userId: localStorage.getItem("userId"),
+      username: cleanedUsername,
+    }),
+  }
+);
+
+const profileData = await profileResponse.json();
+
+if (!profileResponse.ok) {
+  throw new Error(profileData.message || "Could not save Social username.");
+}
 
       const data = await saveSettings({
         nickname,
@@ -183,12 +210,27 @@ function Settings() {
           <div className="settings-field">
             <span>Username</span>
 
-            <input
-              type="text"
-              value={username}
-              readOnly
-              placeholder="Your signup username"
-            />
+            <label className="settings-field">
+  <span>Social username</span>
+
+  <input
+    type="text"
+    value={socialUsername}
+    maxLength="30"
+    placeholder="Example: nirubama"
+    onChange={(event) =>
+      setSocialUsername(
+        event.target.value
+          .toLowerCase()
+          .replace(/[^a-z0-9_]/g, "")
+      )
+    }
+  />
+
+  <small className="username-help-text">
+    Other users can search this username in Social.
+  </small>
+</label>
 
             <small className="username-help-text">
               This is your signup username. Other users can search for you in
