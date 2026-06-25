@@ -19,11 +19,16 @@ function UserPortfolios() {
   const navigate = useNavigate();
 
   const [portfolios, setPortfolios] = useState([]);
+  const [reviews, setReviews] = useState({});
+  const [commentInputs, setCommentInputs] = useState({});
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
+  const [actionLoading, setActionLoading] = useState({});
 
   const userId = location.state?.userId;
   const displayUsername = location.state?.username || username;
+  const reviewerId = localStorage.getItem("userId");
+  const token = localStorage.getItem("id_token");
 
   useEffect(() => {
     const loadPortfolios = async () => {
@@ -49,7 +54,12 @@ function UserPortfolios() {
           throw new Error(data.message || "Could not load portfolios.");
         }
 
-        setPortfolios(Array.isArray(data) ? data : []);
+        const portfolioList = Array.isArray(data) ? data : [];
+        setPortfolios(portfolioList);
+
+        await Promise.all(
+          portfolioList.map((portfolio) => loadReviews(portfolio.portfolioId))
+        );
       } catch (error) {
         console.error("Could not load user portfolios:", error);
         setMessage(error.message || "Could not load portfolios.");
@@ -60,6 +70,176 @@ function UserPortfolios() {
 
     loadPortfolios();
   }, [userId]);
+
+  const loadReviews = async (portfolioId) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/portfolio/review?portfolioId=${encodeURIComponent(
+          portfolioId
+        )}`
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not load reviews.");
+      }
+
+      setReviews((previousReviews) => ({
+        ...previousReviews,
+        [portfolioId]: {
+          likedCount: data.likedCount || 0,
+          averageRating: data.averageRating || 0,
+          ratingCount: data.ratingCount || 0,
+          comments: Array.isArray(data.comments) ? data.comments : [],
+        },
+      }));
+    } catch (error) {
+      console.error("Could not load reviews:", error);
+    }
+  };
+
+  const setPortfolioLoading = (portfolioId, value) => {
+    setActionLoading((previousLoading) => ({
+      ...previousLoading,
+      [portfolioId]: value,
+    }));
+  };
+
+  const saveLike = async (portfolio) => {
+    if (!reviewerId) {
+      alert("Please log in again before liking a portfolio.");
+      return;
+    }
+
+    try {
+      setPortfolioLoading(portfolio.portfolioId, true);
+
+      const response = await fetch(
+        `${API_URL}/portfolio/review/like`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: token } : {}),
+          },
+          body: JSON.stringify({
+            portfolioId: portfolio.portfolioId,
+            userId: portfolio.userId,
+            reviewerId,
+            value: "liked",
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not save like.");
+      }
+
+      await loadReviews(portfolio.portfolioId);
+    } catch (error) {
+      console.error("Like error:", error);
+      alert(error.message || "Could not save like.");
+    } finally {
+      setPortfolioLoading(portfolio.portfolioId, false);
+    }
+  };
+
+  const saveRating = async (portfolio, rating) => {
+    if (!reviewerId) {
+      alert("Please log in again before rating a portfolio.");
+      return;
+    }
+
+    try {
+      setPortfolioLoading(portfolio.portfolioId, true);
+
+      const response = await fetch(
+        `${API_URL}/portfolio/review/rating`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: token } : {}),
+          },
+          body: JSON.stringify({
+            portfolioId: portfolio.portfolioId,
+            userId: portfolio.userId,
+            reviewerId,
+            value: String(rating),
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not save rating.");
+      }
+
+      await loadReviews(portfolio.portfolioId);
+    } catch (error) {
+      console.error("Rating error:", error);
+      alert(error.message || "Could not save rating.");
+    } finally {
+      setPortfolioLoading(portfolio.portfolioId, false);
+    }
+  };
+
+  const saveComment = async (portfolio) => {
+    const comment = (commentInputs[portfolio.portfolioId] || "").trim();
+
+    if (!comment) {
+      alert("Please write a comment first.");
+      return;
+    }
+
+    if (!reviewerId) {
+      alert("Please log in again before posting a comment.");
+      return;
+    }
+
+    try {
+      setPortfolioLoading(portfolio.portfolioId, true);
+
+      const response = await fetch(
+        `${API_URL}/portfolio/review/comment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: token } : {}),
+          },
+          body: JSON.stringify({
+            portfolioId: portfolio.portfolioId,
+            userId: portfolio.userId,
+            reviewerId,
+            value: comment,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Could not post comment.");
+      }
+
+      setCommentInputs((previousInputs) => ({
+        ...previousInputs,
+        [portfolio.portfolioId]: "",
+      }));
+
+      await loadReviews(portfolio.portfolioId);
+    } catch (error) {
+      console.error("Comment error:", error);
+      alert(error.message || "Could not post comment.");
+    } finally {
+      setPortfolioLoading(portfolio.portfolioId, false);
+    }
+  };
 
   const renderTemplate = (portfolio) => {
     switch (portfolio.template) {
@@ -121,27 +301,121 @@ function UserPortfolios() {
         </section>
       ) : (
         <section className="portfolio-list">
-          {portfolios.map((portfolio) => (
-            <article
-              className="portfolio-item-card"
-              key={portfolio.portfolioId}
-            >
-              <div className="portfolio-template-preview">
-                {renderTemplate(portfolio)}
-              </div>
+          {portfolios.map((portfolio) => {
+            const review = reviews[portfolio.portfolioId] || {
+              likedCount: 0,
+              averageRating: 0,
+              ratingCount: 0,
+              comments: [],
+            };
 
-              <div className="user-portfolio-info">
-                <h2>{portfolio.title}</h2>
-                <p>{portfolio.description}</p>
+            const isSaving = actionLoading[portfolio.portfolioId];
 
-                {portfolio.language && (
-                  <span className="user-portfolio-language">
-                    {portfolio.language}
-                  </span>
-                )}
-              </div>
-            </article>
-          ))}
+            return (
+              <article
+                className="portfolio-item-card"
+                key={portfolio.portfolioId}
+              >
+                <div className="portfolio-template-preview">
+                  {renderTemplate(portfolio)}
+                </div>
+
+                <section className="portfolio-review-card">
+                  <div className="review-top-row">
+                    <div>
+                      <span className="review-label">Likes</span>
+                      <strong>♥ {review.likedCount}</strong>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="review-like-button"
+                      onClick={() => saveLike(portfolio)}
+                      disabled={isSaving}
+                    >
+                      ♥ Like
+                    </button>
+                  </div>
+
+                  <div className="review-rating-row">
+                    <div>
+                      <span className="review-label">Rating</span>
+                      <strong>
+                        {review.averageRating
+                          ? Number(review.averageRating).toFixed(1)
+                          : "0.0"}{" "}
+                        / 5
+                      </strong>
+                      <small>({review.ratingCount} ratings)</small>
+                    </div>
+
+                    <div className="review-stars">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          type="button"
+                          key={star}
+                          className="review-star-button"
+                          onClick={() => saveRating(portfolio, star)}
+                          disabled={isSaving}
+                          aria-label={`Give ${star} star rating`}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="review-comments-section">
+                    <h3>Comments ({review.comments.length})</h3>
+
+                    <div className="review-comment-form">
+                      <textarea
+                        value={commentInputs[portfolio.portfolioId] || ""}
+                        placeholder="Write a comment..."
+                        rows="3"
+                        onChange={(event) =>
+                          setCommentInputs((previousInputs) => ({
+                            ...previousInputs,
+                            [portfolio.portfolioId]: event.target.value,
+                          }))
+                        }
+                      />
+
+                      <button
+                        type="button"
+                        className="review-comment-button"
+                        onClick={() => saveComment(portfolio)}
+                        disabled={isSaving}
+                      >
+                        Post Comment
+                      </button>
+                    </div>
+
+                    {review.comments.length === 0 ? (
+                      <p className="no-comments-text">No comments yet.</p>
+                    ) : (
+                      <div className="review-comments-list">
+                        {review.comments.map((comment, index) => (
+                          <div
+                            className="review-comment-item"
+                            key={`${comment.reviewerId}-${comment.createdAt || index}`}
+                          >
+                            <span className="review-comment-avatar">
+                              {(comment.reviewerId || "U")
+                                .charAt(0)
+                                .toUpperCase()}
+                            </span>
+
+                            <p>{comment.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </section>
+              </article>
+            );
+          })}
         </section>
       )}
     </main>
