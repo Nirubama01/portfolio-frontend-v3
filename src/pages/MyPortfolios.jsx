@@ -327,17 +327,20 @@ function MyPortfolios() {
       <div className="my-portfolio-comments-list">
         {review.comments.map((comment, index) => (
           <div
-            className="my-portfolio-comment-item"
-            key={`${comment.reviewerId || "user"}-${
-              comment.createdAt || index
-            }`}
-          >
-            <span className="my-portfolio-comment-avatar">
-              {(comment.reviewerId || "U").charAt(0).toUpperCase()}
-            </span>
+  className="my-portfolio-comment-item"
+  key={`${comment.reviewerId || "user"}-${
+    comment.createdAt || index
+  }`}
+>
+  <span className="my-portfolio-comment-avatar">
+    {(comment.username || "U").charAt(0).toUpperCase()}
+  </span>
 
-            <p>{comment.value}</p>
-          </div>
+  <div className="my-portfolio-comment-content">
+    <strong>@{comment.username || "User"}</strong>
+    <p>{comment.value}</p>
+  </div>
+</div>
         ))}
       </div>
     )}
