@@ -14,7 +14,6 @@ function Settings() {
 
   const [nickname, setNickname] = useState("");
   const [socialUsername, setSocialUsername] = useState("");
-  const [username, setUsername] = useState("");
   const [theme, setTheme] = useState("light");
   const [fontColor, setFontColor] = useState("#1f2937");
 
@@ -33,7 +32,7 @@ function Settings() {
         const data = await getSettings();
 
         setNickname(data.nickname || "");
-        setUsername(data.username || "");
+        setSocialUsername(data.username || "");
         setTheme(data.theme || "light");
         setFontColor(data.fontColor || "#1f2937");
         setProfileImageKey(data.profileImageKey || "");
@@ -129,7 +128,7 @@ if (!profileResponse.ok) {
       });
 
       setNickname(data.nickname || nickname);
-      setUsername(data.username || username);
+      setSocialUsername(profileData.username || cleanedUsername);
       setTheme(data.theme || "light");
       setFontColor(data.fontColor || "#1f2937");
       setProfileImageKey(data.profileImageKey || "");
