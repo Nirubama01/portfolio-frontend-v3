@@ -453,17 +453,17 @@ function UserPortfolios() {
                                 }`}
                               >
                                 <span className="compact-comment-avatar">
-                                  {(comment.reviewerUsername || "U")
-                                    .charAt(0)
-                                    .toUpperCase()}
-                                </span>
+  {(comment.username || "U")
+    .charAt(0)
+    .toUpperCase()}
+</span>
 
-                                <div>
-                                  <strong>
-                                    @{comment.reviewerUsername || "User"}
-                                  </strong>
-                                  <p>{comment.value}</p>
-                                </div>
+<div>
+  <strong>
+    @{comment.username || "User"}
+  </strong>
+  <p>{comment.value}</p>
+</div>
                               </div>
                             ))}
                           </div>
